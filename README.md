@@ -1,0 +1,52 @@
+# Plain Invoice
+
+Send a clean invoice and know if it was paid.
+
+Three free invoices. Then **$29 once** for unlimited. We do not collect your client’s payment — paste your own Stripe Payment Link on the invoice if you want them to pay online.
+
+## Stack
+
+- React 19 + TypeScript
+- TanStack Start / Router / Query
+- Tailwind CSS
+- Supabase (magic-link auth + Postgres + RLS)
+- Stripe Checkout (one-time license)
+
+## Local setup
+
+```sh
+npm install
+cp .env.example .env
+```
+
+1. Create a **new** Supabase project (do not reuse another app’s project).
+2. Put the project URL and publishable/anon key in `.env` (`VITE_*` and `SUPABASE_*`).
+3. Paste [supabase/migrations/20260821160000_init.sql](supabase/migrations/20260821160000_init.sql) into the Supabase SQL editor and run it.
+4. In Supabase Auth → URL configuration, add:
+   - `http://localhost:3000/auth/callback`
+   - your production URL `/auth/callback`
+5. (Optional, to take money) add `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`. Point the webhook at `/api/stripe/webhook` for `checkout.session.completed`.
+6. Set `VITE_APP_URL` to the public origin before deploying.
+
+```sh
+npm run dev
+```
+
+Opens at http://localhost:3000.
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Local server (port 3000) |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | ESLint |
+
+## Product scope (frozen)
+
+This app does one job: create an invoice, share a public link, print/save PDF, mark paid. Do not add expenses, taxes, time tracking, client portals, or Stripe Connect.
+
+## Deploy
+
+Nitro adapter — any Node host, or Vercel/Netlify. See [docs/LAUNCH.md](docs/LAUNCH.md) for deploy steps and community posts.
