@@ -2,9 +2,9 @@ import { z } from 'zod'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequestUrl } from '@tanstack/react-start/server'
 
-import { activateProPlan, getStripe, isStripeConfigured } from '#/lib/billing'
+import { getStripe, isStripeConfigured } from '#/lib/billing'
 import { APP_NAME, PRO_PRICE_CENTS } from '#/lib/config'
-import { requireUser } from '#/lib/supabase.server'
+import { createSupabaseAdmin, requireUser } from '#/lib/supabase.server'
 
 export { isStripeConfigured }
 
@@ -56,10 +56,17 @@ export const confirmCheckout = createServerFn({ method: 'POST' })
       throw new Error('UNAUTHORIZED')
     }
 
-    await activateProPlan({
-      userId: user.id,
-      stripeCustomerId: typeof session.customer === 'string' ? session.customer : null,
-    })
+    const admin = createSupabaseAdmin()
+    const { error } = await admin
+      .from('profiles')
+      .update({
+        plan: 'pro',
+        paid_at: new Date().toISOString(),
+        stripe_customer_id:
+          typeof session.customer === 'string' ? session.customer : null,
+      })
+      .eq('id', user.id)
+    if (error) throw new Error(error.message)
 
     return { plan: 'pro' }
   })
