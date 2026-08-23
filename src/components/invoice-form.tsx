@@ -4,7 +4,7 @@ import { InvoiceDocument, invoiceFromInput } from '#/components/invoice-document
 import { Button } from '#/components/ui/button'
 import { Input, Label, Textarea } from '#/components/ui/field'
 import { centsToDollarInput, dollarsToCents } from '#/lib/money'
-import type { InvoiceInput } from '#/lib/types'
+import type { InvoiceInput, InvoiceStatus } from '#/lib/types'
 
 function RateInput({
   cents,
@@ -33,12 +33,18 @@ export function InvoiceForm({
   submitting,
   error,
   onSubmit,
+  showMarkSent = false,
+  saveLabel = 'Save draft',
+  status = 'draft',
 }: {
   initial: InvoiceInput
   number?: string
   submitting?: boolean
   error?: string | null
-  onSubmit: (input: InvoiceInput) => void
+  onSubmit: (input: InvoiceInput, intent: 'draft' | 'sent') => void
+  showMarkSent?: boolean
+  saveLabel?: string
+  status?: InvoiceStatus
 }) {
   const [form, setForm] = useState<InvoiceInput>(initial)
 
@@ -66,7 +72,7 @@ export function InvoiceForm({
       className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]"
       onSubmit={(event) => {
         event.preventDefault()
-        onSubmit(form)
+        onSubmit(form, 'draft')
       }}
     >
       <div className="island-shell space-y-5 rounded-2xl p-5">
@@ -221,12 +227,23 @@ export function InvoiceForm({
 
         {error ? <p className="text-sm text-red-700">{error}</p> : null}
 
-        <Button type="submit" disabled={submitting}>
-          {submitting ? 'Saving…' : 'Save invoice'}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button type="submit" variant="outline" disabled={submitting}>
+            {submitting ? 'Saving…' : saveLabel}
+          </Button>
+          {showMarkSent ? (
+            <Button
+              type="button"
+              disabled={submitting}
+              onClick={() => onSubmit(form, 'sent')}
+            >
+              {submitting ? 'Saving…' : 'Mark sent'}
+            </Button>
+          ) : null}
+        </div>
       </div>
 
-      <InvoiceDocument invoice={invoiceFromInput(form, { number })} />
+      <InvoiceDocument invoice={invoiceFromInput(form, { number, status })} />
     </form>
   )
 }

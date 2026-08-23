@@ -18,7 +18,7 @@ export const Route = createFileRoute('/i/$publicId')({
     <main className="page-wrap py-20 text-center">
       <h1 className="display-title text-3xl">Invoice not found</h1>
       <p className="mt-2 text-[var(--sea-ink-soft)]">
-        Drafts stay private until the sender copies the public link.
+        Drafts stay private until the sender marks the invoice sent.
       </p>
     </main>
   ),

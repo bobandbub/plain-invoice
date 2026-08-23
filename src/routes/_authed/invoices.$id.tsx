@@ -42,10 +42,21 @@ function EditInvoicePage() {
             ← All invoices
           </Link>
           <h1 className="display-title mt-2 text-4xl">{invoice.number}</h1>
+          <p className="mt-1 text-sm text-[var(--sea-ink-soft)]">
+            {invoice.status === 'draft'
+              ? 'Draft — private until you mark it sent'
+              : invoice.status === 'paid'
+                ? 'Paid'
+                : 'Sent'}
+          </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={() => void copyLink()}>
-            {copied ? 'Copied' : 'Copy public link'}
+            {copied
+              ? 'Copied'
+              : invoice.status === 'draft'
+                ? 'Mark sent and copy link'
+                : 'Copy public link'}
           </Button>
           {invoice.status !== 'paid' ? (
             <Button
@@ -89,13 +100,19 @@ function EditInvoicePage() {
           })),
         }}
         number={invoice.number}
+        status={invoice.status}
         submitting={busy}
         error={error}
-        onSubmit={async (input) => {
+        showMarkSent={invoice.status === 'draft'}
+        saveLabel={invoice.status === 'draft' ? 'Save draft' : 'Save changes'}
+        onSubmit={async (input, intent) => {
           setBusy(true)
           setError(null)
           try {
             await save({ data: { ...input, id: invoice.id } })
+            if (intent === 'sent' && invoice.status === 'draft') {
+              await setStatus({ data: { id: invoice.id, status: 'sent' } })
+            }
             await router.invalidate()
           } catch (err) {
             setError(err instanceof Error ? err.message : 'Could not save')
