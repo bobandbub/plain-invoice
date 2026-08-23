@@ -1,53 +1,49 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { Link, createFileRoute } from '@tanstack/react-router'
 
-import { createSupabaseBrowser } from '#/lib/supabase.browser'
+import { completeMagicLink } from '#/lib/auth.functions'
 
 export const Route = createFileRoute('/auth/callback')({
-  ssr: false,
-  component: AuthCallback,
+  validateSearch: (search: Record<string, unknown>) => ({
+    code: typeof search.code === 'string' ? search.code : undefined,
+    token_hash: typeof search.token_hash === 'string' ? search.token_hash : undefined,
+    type: typeof search.type === 'string' ? search.type : undefined,
+  }),
+  loaderDeps: ({ search }) => search,
+  loader: async ({ deps }) => {
+    await completeMagicLink({
+      data: {
+        code: deps.code,
+        token_hash: deps.token_hash,
+        type: deps.type,
+      },
+    })
+  },
+  component: AuthCallbackPending,
+  errorComponent: AuthCallbackError,
 })
 
-function AuthCallback() {
-  const navigate = useNavigate()
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const run = async () => {
-      const url = new URL(window.location.href)
-      const code = url.searchParams.get('code')
-      const tokenHash = url.searchParams.get('token_hash')
-      const type = url.searchParams.get('type')
-      const supabase = createSupabaseBrowser()
-
-      if (code) {
-        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
-        if (exchangeError) throw exchangeError
-      } else if (tokenHash && type) {
-        const { error: otpError } = await supabase.auth.verifyOtp({
-          token_hash: tokenHash,
-          type,
-        })
-        if (otpError) throw otpError
-      } else {
-        throw new Error('Missing login code. Request a new magic link.')
-      }
-
-      await navigate({ to: '/dashboard' })
-    }
-
-    void run().catch((err: unknown) => {
-      setError(err instanceof Error ? err.message : 'Sign-in failed')
-    })
-  }, [navigate])
-
+function AuthCallbackPending() {
   return (
     <main className="page-wrap py-20 text-center">
-      {error ? (
-        <p className="text-red-700">{error}</p>
-      ) : (
-        <p className="text-[var(--sea-ink-soft)]">Signing you in…</p>
-      )}
+      <p className="text-[var(--sea-ink-soft)]">Signing you in…</p>
+    </main>
+  )
+}
+
+function AuthCallbackError({ error }: { error: Error }) {
+  return (
+    <main className="page-wrap py-20 text-center">
+      <h1 className="display-title text-3xl">Could not finish sign-in</h1>
+      <p className="mx-auto mt-3 max-w-md text-sm text-[var(--sea-ink-soft)]">
+        {error.message}
+      </p>
+      <p className="mx-auto mt-3 max-w-md text-sm text-[var(--sea-ink-soft)]">
+        Open the email link in the same browser where you requested it. Or go
+        back to login and type the 8-digit code from the email.
+      </p>
+      <p className="mt-6">
+        <Link to="/login">Back to login</Link>
+      </p>
     </main>
   )
 }

@@ -3,6 +3,7 @@ import { useServerFn } from '@tanstack/react-start'
 
 import { Button } from '#/components/ui/button'
 import { FREE_INVOICE_LIMIT, PRO_PRICE_LABEL } from '#/lib/config'
+import { confirmCheckout } from '#/lib/billing.functions'
 import { deleteInvoice, getDashboard } from '#/lib/invoices.functions'
 import { formatMoney } from '#/lib/money'
 import type { InvoiceStatus } from '#/lib/types'
@@ -10,6 +11,7 @@ import type { InvoiceStatus } from '#/lib/types'
 type DashboardSearch = {
   status?: InvoiceStatus
   upgraded?: string
+  session_id?: string
 }
 
 export const Route = createFileRoute('/_authed/dashboard')({
@@ -18,8 +20,15 @@ export const Route = createFileRoute('/_authed/dashboard')({
       ? (search.status as InvoiceStatus)
       : undefined,
     upgraded: typeof search.upgraded === 'string' ? search.upgraded : undefined,
+    session_id: typeof search.session_id === 'string' ? search.session_id : undefined,
   }),
-  loader: () => getDashboard(),
+  loaderDeps: ({ search }) => ({ session_id: search.session_id }),
+  loader: async ({ deps }) => {
+    if (deps.session_id) {
+      await confirmCheckout({ data: { session_id: deps.session_id } })
+    }
+    return getDashboard()
+  },
   component: DashboardPage,
 })
 
@@ -66,7 +75,9 @@ function DashboardPage() {
 
       {upgraded ? (
         <p className="mt-4 rounded-md border border-[var(--line)] bg-white px-4 py-3 text-sm">
-          Payment received. Unlimited invoices are unlocked once Stripe confirms (usually a few seconds).
+          {data.plan === 'pro'
+            ? 'Payment confirmed. Unlimited invoices are unlocked.'
+            : 'Returned from Stripe, but the payment is not confirmed yet. Try refreshing once.'}
         </p>
       ) : null}
 

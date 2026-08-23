@@ -14,6 +14,7 @@ export const Route = createFileRoute('/login')({
 function LoginPage() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
+  const [code, setCode] = useState('')
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -64,9 +65,48 @@ function LoginPage() {
           We’ll email you a link. No password.
         </p>
         {sent ? (
-          <p className="mt-6 text-sm">
-            Check <strong>{email}</strong> and open the link to continue.
-          </p>
+          <form
+            className="mt-6 space-y-4"
+            onSubmit={async (event) => {
+              event.preventDefault()
+              setError(null)
+              setBusy(true)
+              try {
+                const supabase = createSupabaseBrowser()
+                const { error: verifyError } = await supabase.auth.verifyOtp({
+                  email,
+                  token: code.trim(),
+                  type: 'email',
+                })
+                if (verifyError) throw verifyError
+                await navigate({ to: '/dashboard' })
+              } catch (err) {
+                setError(err instanceof Error ? err.message : 'Could not verify the code')
+              } finally {
+                setBusy(false)
+              }
+            }}
+          >
+            <p className="text-sm">
+              Check <strong>{email}</strong>. Open the link in this same browser,
+              or type the email code below.
+            </p>
+            <div>
+              <Label htmlFor="code">Email code</Label>
+              <Input
+                id="code"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                required
+              />
+            </div>
+            {error ? <p className="text-sm text-red-700">{error}</p> : null}
+            <Button type="submit" disabled={busy || !code.trim()}>
+              {busy ? 'Checking…' : 'Continue'}
+            </Button>
+          </form>
         ) : (
           <form className="mt-6 space-y-4" onSubmit={onSubmit}>
             <div>

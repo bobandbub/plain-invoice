@@ -1,19 +1,12 @@
-import Stripe from 'stripe'
+import { z } from 'zod'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequestUrl } from '@tanstack/react-start/server'
 
+import { activateProPlan, getStripe, isStripeConfigured } from '#/lib/billing'
 import { APP_NAME, PRO_PRICE_CENTS } from '#/lib/config'
 import { requireUser } from '#/lib/supabase.server'
 
-function getStripe() {
-  const key = process.env.STRIPE_SECRET_KEY
-  if (!key) throw new Error('STRIPE_NOT_CONFIGURED')
-  return new Stripe(key)
-}
-
-export function isStripeConfigured() {
-  return Boolean(process.env.STRIPE_SECRET_KEY)
-}
+export { isStripeConfigured }
 
 export const createCheckoutSession = createServerFn({ method: 'POST' }).handler(
   async (): Promise<{ url: string }> => {
@@ -40,7 +33,7 @@ export const createCheckoutSession = createServerFn({ method: 'POST' }).handler(
           },
         },
       ],
-      success_url: `${origin}/dashboard?upgraded=1`,
+      success_url: `${origin}/dashboard?upgraded=1&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/upgrade`,
     })
 
@@ -48,6 +41,28 @@ export const createCheckoutSession = createServerFn({ method: 'POST' }).handler(
     return { url: session.url }
   },
 )
+
+export const confirmCheckout = createServerFn({ method: 'POST' })
+  .validator(z.object({ session_id: z.string().min(1) }))
+  .handler(async ({ data }): Promise<{ plan: 'free' | 'pro' }> => {
+    const { user } = await requireUser()
+    const session = await getStripe().checkout.sessions.retrieve(data.session_id)
+    const owner = session.metadata?.user_id ?? session.client_reference_id
+
+    if (session.payment_status !== 'paid') {
+      throw new Error('PAYMENT_NOT_COMPLETE')
+    }
+    if (!owner || owner !== user.id) {
+      throw new Error('UNAUTHORIZED')
+    }
+
+    await activateProPlan({
+      userId: user.id,
+      stripeCustomerId: typeof session.customer === 'string' ? session.customer : null,
+    })
+
+    return { plan: 'pro' }
+  })
 
 export const getBillingStatus = createServerFn({ method: 'GET' }).handler(
   async (): Promise<{ plan: 'free' | 'pro'; stripeReady: boolean }> => {

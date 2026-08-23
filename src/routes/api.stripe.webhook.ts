@@ -1,7 +1,7 @@
 import Stripe from 'stripe'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { createSupabaseAdmin } from '#/lib/supabase.server'
+import { activateProPlan } from '#/lib/billing'
 
 export const Route = createFileRoute('/api/stripe/webhook')({
   server: {
@@ -33,19 +33,11 @@ export const Route = createFileRoute('/api/stripe/webhook')({
           const userId =
             session.metadata?.user_id ?? session.client_reference_id ?? null
           if (userId && session.payment_status === 'paid') {
-            const admin = createSupabaseAdmin()
-            const { error } = await admin
-              .from('profiles')
-              .update({
-                plan: 'pro',
-                paid_at: new Date().toISOString(),
-                stripe_customer_id:
-                  typeof session.customer === 'string' ? session.customer : null,
-              })
-              .eq('id', userId)
-            if (error) {
-              return new Response(error.message, { status: 500 })
-            }
+            await activateProPlan({
+              userId,
+              stripeCustomerId:
+                typeof session.customer === 'string' ? session.customer : null,
+            })
           }
         }
 

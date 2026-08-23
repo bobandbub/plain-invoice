@@ -16,6 +16,10 @@ export function createSupabaseServer() {
   const { url, anonKey } = publicSupabaseConfig()
 
   return createServerClient(url, anonKey, {
+    cookieOptions: {
+      path: '/',
+      sameSite: 'lax',
+    },
     cookies: {
       getAll() {
         return Object.entries(getCookies()).map(([name, value]) => ({
@@ -25,7 +29,11 @@ export function createSupabaseServer() {
       },
       setAll(cookiesToSet) {
         for (const { name, value, options } of cookiesToSet) {
-          setCookie(name, value, options)
+          setCookie(name, value, {
+            ...options,
+            path: options.path ?? '/',
+            sameSite: options.sameSite ?? 'lax',
+          })
         }
       },
     },

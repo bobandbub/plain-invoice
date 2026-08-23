@@ -13,5 +13,16 @@ export function createSupabaseBrowser() {
   if (!url || !key) {
     throw new Error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY')
   }
-  return createBrowserClient(url, key)
+  return createBrowserClient(url, key, {
+    cookieOptions: {
+      path: '/',
+      sameSite: 'lax',
+    },
+    auth: {
+      // The callback route exchanges the code on the server. Auto-detect
+      // here would consume the PKCE verifier first and then fail.
+      detectSessionInUrl: false,
+      flowType: 'pkce',
+    },
+  })
 }

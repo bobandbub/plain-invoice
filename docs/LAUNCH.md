@@ -1,23 +1,18 @@
 # Launch notes
 
-Plain Invoice is ready to charge once Supabase (required) and Stripe (required to take money) are connected.
+GitHub: https://github.com/bobandbub/plain-invoice
+
+Login, invoices, and checkout stay off until production env vars are set on Vercel.
 
 ## Deploy (Vercel)
 
-1. Push this repo to GitHub.
-2. Import the project in Vercel.
-3. Set environment variables from `.env.example` (production values).
-4. After the first deploy, add `https://YOUR_DOMAIN/auth/callback` to Supabase Auth redirect URLs.
-5. Set `VITE_APP_URL=https://YOUR_DOMAIN`.
-6. In Stripe, add a webhook: `https://YOUR_DOMAIN/api/stripe/webhook`, event `checkout.session.completed`. Paste the signing secret into `STRIPE_WEBHOOK_SECRET`.
+1. Production project is linked to the GitHub repo. A push to `main` deploys.
+2. Set environment variables from `.env.example` (production values) on Vercel.
+3. After the first lasting deploy, add `https://YOUR_DOMAIN/auth/callback` to Supabase Auth redirect URLs.
+4. Set `VITE_APP_URL=https://YOUR_DOMAIN` and redeploy.
+5. In Stripe, add a webhook: `https://YOUR_DOMAIN/api/stripe/webhook`, event `checkout.session.completed`. Paste the signing secret into `STRIPE_WEBHOOK_SECRET`.
 
-CLI (if you are logged in):
-
-```sh
-npx vercel --yes --prod
-```
-
-## Community posts (paste after the live URL exists)
+## Community posts (paste after a lasting URL exists)
 
 Keep it helpful, not spammy. One post per community. Mention the 3-free / $29-once deal.
 
