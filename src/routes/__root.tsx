@@ -7,6 +7,8 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
+import { Analytics } from '@vercel/analytics/react'
+
 import { SiteFooter, SiteHeader } from '#/components/site-chrome'
 import { APP_NAME, APP_TAGLINE } from '#/lib/config'
 import { getAuthUser } from '#/lib/auth.functions'
@@ -65,6 +67,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <Analytics />
         {import.meta.env.DEV ? (
           <TanStackDevtools
             config={{

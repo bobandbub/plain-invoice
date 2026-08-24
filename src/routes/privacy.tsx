@@ -15,6 +15,8 @@ function PrivacyPage() {
         (if you upgrade) a Stripe customer id. If you click Email invoice, we send that
         invoice link to the client address you entered. We do not store card numbers.
         Magic-link auth is handled by Supabase. License payments are handled by Stripe.
+        Hosting is on Vercel. We use Vercel Web Analytics for aggregated page views
+        (no advertising cookies, no sale of personal data).
       </p>
       <p>
         Public invoice links are unguessable but not password-protected. Do not put
