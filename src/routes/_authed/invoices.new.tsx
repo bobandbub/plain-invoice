@@ -3,6 +3,7 @@ import { useServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
 
 import { InvoiceForm } from '#/components/invoice-form'
+import { FadeIn } from '#/components/motion'
 import { getAuthUser } from '#/lib/auth.functions'
 import { emptyInvoiceInput } from '#/lib/invoices'
 import {
@@ -31,7 +32,8 @@ function NewInvoicePage() {
   const [error, setError] = useState<string | null>(null)
 
   return (
-    <main className="page-wrap page-enter py-10">
+    <main className="page-wrap py-10">
+      <FadeIn>
       <h1 className="display-title text-4xl">New invoice</h1>
       <p className="mt-2 mb-8 max-w-xl text-[var(--sea-ink-soft)]">
         Save a draft while you write. Email invoice sends the public link to the
@@ -73,6 +75,7 @@ function NewInvoicePage() {
           }
         }}
       />
+      </FadeIn>
     </main>
   )
 }

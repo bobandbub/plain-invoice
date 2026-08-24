@@ -1,7 +1,8 @@
 import { cva } from 'class-variance-authority'
 import type { VariantProps } from 'class-variance-authority'
-import * as React from 'react'
+import type { HTMLMotionProps } from 'motion/react'
 
+import { m } from '#/components/motion'
 import { cn } from '#/lib/utils'
 
 export const buttonVariants = cva(
@@ -10,9 +11,9 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'border border-[var(--sea-ink)] bg-[var(--sea-ink)] text-[var(--stamp-ink)] hover:border-[var(--stamp)] hover:bg-[var(--stamp)] hover:text-[var(--stamp-ink)] hover:-translate-y-px',
+          'border border-[var(--sea-ink)] bg-[var(--sea-ink)] text-[var(--stamp-ink)] hover:border-[var(--stamp)] hover:bg-[var(--stamp)] hover:text-[var(--stamp-ink)]',
         stamp:
-          'border border-[var(--sea-ink)] bg-[var(--sea-ink)] text-[var(--stamp-ink)] hover:border-[var(--stamp)] hover:bg-[var(--stamp)] hover:text-[var(--stamp-ink)] hover:-translate-y-px',
+          'border border-[var(--sea-ink)] bg-[var(--sea-ink)] text-[var(--stamp-ink)] hover:border-[var(--stamp)] hover:bg-[var(--stamp)] hover:text-[var(--stamp-ink)]',
         outline:
           'border border-[var(--sea-ink)] bg-transparent text-[var(--sea-ink)] hover:bg-[var(--sea-ink)] hover:text-[var(--stamp-ink)]',
         ghost: 'text-[var(--sea-ink-soft)] hover:text-[var(--sea-ink)]',
@@ -37,13 +38,18 @@ export function Button({
   variant,
   size,
   type = 'button',
+  disabled,
   ...props
-}: React.ComponentProps<'button'> & VariantProps<typeof buttonVariants>) {
+}: HTMLMotionProps<'button'> & VariantProps<typeof buttonVariants>) {
   return (
-    <button
+    <m.button
       type={type}
+      disabled={disabled}
       className={cn(buttonVariants({ variant, size }), className)}
       {...props}
+      whileHover={disabled ? undefined : { y: -2, scale: 1.03 }}
+      whileTap={disabled ? undefined : { y: 0, scale: 0.98 }}
+      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
     />
   )
 }

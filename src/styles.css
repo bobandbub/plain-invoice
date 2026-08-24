@@ -296,14 +296,9 @@ pre code {
 
 button {
   transition:
-    background-color 150ms ease,
-    color 150ms ease,
-    border-color 150ms ease,
-    transform 150ms ease;
-}
-
-button:active:not(:disabled) {
-  transform: translateY(1px);
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
 }
 
 .nav-link {
@@ -315,6 +310,7 @@ button:active:not(:disabled) {
   color: var(--sea-ink-soft);
   border-bottom: 1px solid transparent;
   padding-bottom: 2px;
+  transition: color 180ms ease, border-color 180ms ease;
 }
 
 .nav-link:hover,
@@ -335,9 +331,10 @@ button:active:not(:disabled) {
   color: var(--sea-ink);
   text-decoration: none;
   transition:
-    background-color 150ms ease,
-    color 150ms ease,
-    border-color 150ms ease;
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
 }
 
 .nav-login:hover {
@@ -349,10 +346,9 @@ button:active:not(:disabled) {
 .has-arrow {
   gap: 10px;
   transition:
-    background-color 150ms ease,
-    color 150ms ease,
-    border-color 150ms ease,
-    transform 150ms ease;
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
 }
 
 .has-arrow::after {
@@ -515,7 +511,8 @@ button:active:not(:disabled) {
   border-bottom: 1px solid var(--line);
 }
 
-.step-row:first-of-type {
+.step-row:first-of-type,
+.step-wrap:first-child .step-row {
   border-top: 1px solid var(--sea-ink);
 }
 
@@ -617,6 +614,7 @@ button:active:not(:disabled) {
   text-decoration: underline;
   text-underline-offset: 4px;
   color: var(--sea-ink-soft);
+  transition: color 180ms ease;
 }
 
 .link-secondary:hover {
@@ -686,6 +684,7 @@ button:active:not(:disabled) {
   font-size: 0.95rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  transition: opacity 180ms ease;
 }
 
 .brand-slash {
@@ -695,6 +694,7 @@ button:active:not(:disabled) {
 .brand-mark:hover {
   color: var(--sea-ink);
   text-decoration: none;
+  opacity: 0.72;
 }
 
 .notice {
@@ -706,18 +706,29 @@ button:active:not(:disabled) {
   font-size: 0.875rem;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .nav-login:hover {
+    transform: translateY(-2px) scale(1.03);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-enter,
   .desk-sheet,
   .rubber-stamp,
   button,
-  a {
+  a,
+  .nav-login,
+  .has-arrow,
+  .brand-mark,
+  .link-secondary {
     animation: none !important;
     transition: none !important;
   }
 
   .desk-sheet,
-  .desk-sheet:hover {
+  .desk-sheet:hover,
+  .nav-login:hover {
     transform: none;
   }
 }

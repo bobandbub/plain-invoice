@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 
 import { InvoiceDocument } from '#/components/invoice-document'
+import { FadeIn, HoverLift, m } from '#/components/motion'
 import { buttonVariants } from '#/components/ui/button'
 import { APP_NAME, FREE_INVOICE_LIMIT, PRO_PRICE_LABEL } from '#/lib/config'
 import { cn } from '#/lib/utils'
@@ -47,17 +48,26 @@ const steps = [
 
 function HomeCta({ user }: { user: { id: string } | null }) {
   const className = cn(buttonVariants({ size: 'lg' }), 'has-arrow no-underline')
-  if (user) {
-    return (
-      <Link to="/dashboard" className={className}>
-        Go to invoices
-      </Link>
-    )
-  }
-  return (
-    <Link to="/login" search={{ mode: 'signup' }} className={className}>
-      Create an invoice
+  const label = user ? 'Go to invoices' : 'Create an invoice'
+  const inner = user ? (
+    <Link to="/dashboard" className={className}>
+      {label}
     </Link>
+  ) : (
+    <Link to="/login" search={{ mode: 'signup' }} className={className}>
+      {label}
+    </Link>
+  )
+
+  return (
+    <m.span
+      className="inline-flex"
+      whileHover={{ y: -2, scale: 1.03 }}
+      whileTap={{ y: 0, scale: 0.98 }}
+      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {inner}
+    </m.span>
   )
 }
 
@@ -65,7 +75,7 @@ function Home() {
   const { user } = Route.useRouteContext()
 
   return (
-    <main className="page-wrap page-enter">
+    <main className="page-wrap">
       <section className="grid items-start gap-14 py-12 md:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
         <div>
           <p className="island-kicker">Ledger No. 001 — for one person, one job</p>
@@ -104,48 +114,58 @@ function Home() {
           </div>
         </div>
 
-        <div className="pr-3">
+        <HoverLift className="pr-3">
           <div className="desk-sheet">
             <InvoiceDocument invoice={sampleInvoice} />
           </div>
           <p className="stage-caption">sample — you mark it paid</p>
-        </div>
+        </HoverLift>
       </section>
 
       <hr className="border-0 border-t-2 border-[var(--sea-ink)]" />
 
       <section className="py-16 md:py-20">
-        <div className="section-head">
-          <h2>How the link works</h2>
-          <span>three steps, one job</span>
+        <FadeIn>
+          <div className="section-head">
+            <h2>How the link works</h2>
+            <span>three steps, one job</span>
+          </div>
+        </FadeIn>
+        <div>
+          {steps.map((step, index) => (
+            <FadeIn key={step.title} delay={index * 0.07} className="step-wrap">
+              <article className="step-row">
+                <span className="step-index">0{index + 1}</span>
+                <h3 className="step-title">{step.title}</h3>
+                <p className="step-desc max-w-[56ch] text-[0.95rem] text-[var(--sea-ink-soft)]">
+                  {step.body}
+                </p>
+              </article>
+            </FadeIn>
+          ))}
         </div>
-        {steps.map((step, index) => (
-          <article key={step.title} className="step-row">
-            <span className="step-index">0{index + 1}</span>
-            <h3 className="step-title">{step.title}</h3>
-            <p className="step-desc max-w-[56ch] text-[0.95rem] text-[var(--sea-ink-soft)]">
-              {step.body}
-            </p>
-          </article>
-        ))}
       </section>
 
       <section id="pricing" className="pb-20">
-        <div className="pricing-box">
-          <div>
-            <p className="amt">
-              <span className="free">{FREE_INVOICE_LIMIT} invoices free</span>
-              {' — then '}
-              <b>{PRO_PRICE_LABEL}</b>
-              {', for unlimited. No subscription line item.'}
-            </p>
-            <p className="mt-2 max-w-xl text-sm text-[var(--sea-ink-soft)]">
-              We do not collect your client’s payment. Paste your own Stripe Payment
-              Link if you want them to pay online.
-            </p>
-          </div>
-          <HomeCta user={user} />
-        </div>
+        <FadeIn>
+          <HoverLift>
+            <div className="pricing-box">
+              <div>
+                <p className="amt">
+                  <span className="free">{FREE_INVOICE_LIMIT} invoices free</span>
+                  {' — then '}
+                  <b>{PRO_PRICE_LABEL}</b>
+                  {', for unlimited. No subscription line item.'}
+                </p>
+                <p className="mt-2 max-w-xl text-sm text-[var(--sea-ink-soft)]">
+                  We do not collect your client’s payment. Paste your own Stripe Payment
+                  Link if you want them to pay online.
+                </p>
+              </div>
+              <HomeCta user={user} />
+            </div>
+          </HoverLift>
+        </FadeIn>
       </section>
     </main>
   )

@@ -2,6 +2,7 @@ import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 
 import { Button } from '#/components/ui/button'
+import { FadeIn } from '#/components/motion'
 import { FREE_INVOICE_LIMIT, PRO_PRICE_LABEL } from '#/lib/config'
 import { confirmCheckout } from '#/lib/billing.functions'
 import { deleteInvoice, getDashboard } from '#/lib/invoices.functions'
@@ -51,7 +52,8 @@ function DashboardPage() {
     : data.invoices
 
   return (
-    <main className="page-wrap page-enter py-8">
+    <main className="page-wrap py-8">
+      <FadeIn>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="island-kicker">Ledger</p>
@@ -144,6 +146,7 @@ function DashboardPage() {
           </table>
         )}
       </div>
+      </FadeIn>
     </main>
   )
 }

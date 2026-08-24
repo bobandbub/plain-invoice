@@ -12,6 +12,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Analytics } from '@vercel/analytics/react'
 
 import { SiteFooter, SiteHeader } from '#/components/site-chrome'
+import { MotionProvider, PageTransition } from '#/components/motion'
 import { APP_NAME, APP_DESCRIPTION } from '#/lib/config'
 import { getAuthUser } from '#/lib/auth.functions'
 import { createSupabaseBrowser, isSupabaseConfigured } from '#/lib/supabase.browser'
@@ -59,12 +60,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootComponent() {
   const { user } = Route.useRouteContext()
   return (
-    <>
+    <MotionProvider>
       <AuthSync />
       <SiteHeader user={user} />
-      <Outlet />
+      <PageTransition>
+        <Outlet />
+      </PageTransition>
       <SiteFooter />
-    </>
+    </MotionProvider>
   )
 }
 

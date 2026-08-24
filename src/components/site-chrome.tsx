@@ -14,7 +14,7 @@ export function SiteHeader({ user }: { user: AuthUser | null }) {
   if (printable) return null
 
   return (
-    <header className="no-print sticky top-0 z-20 border-b-2 border-[var(--sea-ink)] bg-[var(--header-bg)]">
+    <header className="no-print sticky top-0 z-20 border-b-2 border-[var(--sea-ink)] bg-[var(--header-bg)] [view-transition-name:site-header]">
       <div className="page-wrap flex h-[4.25rem] items-center justify-between">
         <BrandMark />
         <nav className="flex items-center gap-4 sm:gap-7">

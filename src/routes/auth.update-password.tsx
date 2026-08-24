@@ -70,7 +70,7 @@ function UpdatePasswordPage() {
   }
 
   return (
-    <main className="page-wrap page-enter py-10">
+    <main className="page-wrap py-10">
       <p className="island-kicker">Account</p>
       <h1 className="display-title mt-2 text-3xl">Choose a password</h1>
       <p className="mt-2 max-w-md text-sm text-[var(--sea-ink-soft)]">

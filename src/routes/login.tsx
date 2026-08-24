@@ -2,6 +2,7 @@ import { createFileRoute, redirect, useNavigate, useRouter } from '@tanstack/rea
 import { useState } from 'react'
 
 import { Button } from '#/components/ui/button'
+import { FadeIn } from '#/components/motion'
 import { Input, Label } from '#/components/ui/field'
 import { APP_NAME, MIN_PASSWORD_LENGTH } from '#/lib/config'
 import { createSupabaseBrowser, isSupabaseConfigured } from '#/lib/supabase.browser'
@@ -48,7 +49,7 @@ function LoginPage() {
 
   if (!configured) {
     return (
-      <main className="page-wrap page-enter py-10">
+      <main className="page-wrap py-10">
         <div className="island-shell max-w-lg p-7">
           <h1 className="display-title text-3xl">Set up {APP_NAME} first</h1>
           <p className="mt-3 text-[var(--sea-ink-soft)]">
@@ -149,7 +150,8 @@ function LoginPage() {
           : `Log in to ${APP_NAME}`
 
   return (
-    <main className="page-wrap page-enter grid items-start gap-10 py-10 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] md:gap-16 md:py-12">
+    <main className="page-wrap grid items-start gap-10 py-10 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] md:gap-16 md:py-12">
+      <FadeIn>
       <aside className="max-w-sm">
         <p className="island-kicker">Account</p>
         <p className="display-title mt-3 text-4xl leading-[1.05]">
@@ -159,6 +161,8 @@ function LoginPage() {
           Stay signed in on this browser. No magic link required.
         </p>
       </aside>
+      </FadeIn>
+      <FadeIn delay={0.08}>
       <div>
         <p className="island-kicker">
           {view === 'signup' ? 'New account' : 'Welcome back'}
@@ -294,6 +298,7 @@ function LoginPage() {
           Back to home
         </button>
       </div>
+      </FadeIn>
     </main>
   )
 }

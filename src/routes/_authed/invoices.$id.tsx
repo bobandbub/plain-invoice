@@ -3,6 +3,7 @@ import { useServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
 
 import { InvoiceForm } from '#/components/invoice-form'
+import { FadeIn } from '#/components/motion'
 import { Button } from '#/components/ui/button'
 import {
   emailInvoice,
@@ -49,7 +50,8 @@ function EditInvoicePage() {
   }
 
   return (
-    <main className="page-wrap page-enter py-10">
+    <main className="page-wrap py-10">
+      <FadeIn>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link to="/dashboard" className="text-sm">
@@ -153,6 +155,7 @@ function EditInvoicePage() {
           }
         }}
       />
+      </FadeIn>
     </main>
   )
 }
