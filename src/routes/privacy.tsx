@@ -8,13 +8,13 @@ export const Route = createFileRoute('/privacy')({
 
 function PrivacyPage() {
   return (
-    <main className="page-wrap prose py-12">
+    <main className="page-wrap prose py-10">
       <h1 className="display-title">Privacy</h1>
       <p>
         {APP_NAME} stores the email you use to sign in, the invoices you create, and
         (if you upgrade) a Stripe customer id. If you click Email invoice, we send that
         invoice link to the client address you entered. We do not store card numbers.
-        Magic-link auth is handled by Supabase. License payments are handled by Stripe.
+        Sign-in is email and password, handled by Supabase. License payments are handled by Stripe.
         Hosting is on Vercel. We use Vercel Web Analytics for aggregated page views
         (no advertising cookies, no sale of personal data).
       </p>

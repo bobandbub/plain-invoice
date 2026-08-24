@@ -38,7 +38,7 @@ function NewInvoicePage() {
         client and marks it sent.
       </p>
       {!mailReady ? (
-        <p className="mb-6 rounded-xl border border-[var(--line)] bg-white/80 px-4 py-3 text-sm text-[var(--sea-ink-soft)]">
+        <p className="notice mb-6">
           Email is off until <code>RESEND_API_KEY</code> is set. You can still
           copy the public link after you mark it sent.
         </p>

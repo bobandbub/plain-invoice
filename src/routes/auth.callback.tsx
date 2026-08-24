@@ -38,8 +38,8 @@ function AuthCallbackError({ error }: { error: Error }) {
         {error.message}
       </p>
       <p className="mx-auto mt-3 max-w-md text-sm text-[var(--sea-ink-soft)]">
-        Open the email link in the same browser where you requested it. Or go
-        back to login and type the 8-digit code from the email.
+        Open the email link in the same browser where you requested it, or go
+        back and log in with your password.
       </p>
       <p className="mt-6">
         <Link to="/login">Back to login</Link>

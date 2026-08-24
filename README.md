@@ -9,7 +9,7 @@ Three free invoices. Then **$29 once** for unlimited. We do not collect your cli
 - React 19 + TypeScript
 - TanStack Start / Router / Query
 - Tailwind CSS
-- Supabase (magic-link auth + Postgres + RLS)
+- Supabase (email/password auth + Postgres + RLS)
 - Stripe Checkout (one-time license)
 - Resend (one email per invoice, optional)
 
@@ -25,7 +25,8 @@ cp .env.example .env
 3. Paste [supabase/migrations/20260821160000_init.sql](supabase/migrations/20260821160000_init.sql) into the Supabase SQL editor and run it.
 4. In Supabase Auth → URL configuration, add:
    - `http://localhost:3000/auth/callback`
-   - your production URL `/auth/callback`
+   - `http://localhost:3000/auth/update-password`
+   - your production URL `/auth/callback` and `/auth/update-password`
 5. (Optional, to take money) add `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`. Point the webhook at `/api/stripe/webhook` for `checkout.session.completed`.
 6. (Optional, to email invoices) add `RESEND_API_KEY`. For production, verify a domain and set `RESEND_FROM_EMAIL`.
 7. Set `VITE_APP_URL` to the public origin before deploying.

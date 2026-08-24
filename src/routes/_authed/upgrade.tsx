@@ -18,14 +18,18 @@ function UpgradePage() {
   const [busy, setBusy] = useState(false)
 
   return (
-    <main className="page-wrap page-enter py-16">
-      <div className="island-shell mx-auto max-w-lg rounded-3xl p-8">
-        <p className="island-kicker">Upgrade</p>
-        <h1 className="display-title mt-2 text-4xl">Unlimited invoices, {PRO_PRICE_LABEL}.</h1>
-        <p className="mt-3 text-[var(--sea-ink-soft)]">
-          The free plan includes {FREE_INVOICE_LIMIT} invoices. Pay once — no
-          subscription.
-        </p>
+    <main className="page-wrap page-enter py-10">
+      <div className="price-ledger max-w-3xl">
+        <div>
+          <p className="island-kicker">Upgrade</p>
+          <p className="price-figure mt-3">$29</p>
+          <p className="display-title mt-2 text-3xl">once, then <em>unlimited</em>.</p>
+        </div>
+        <div>
+          <p className="text-[var(--sea-ink-soft)]">
+            The free plan includes {FREE_INVOICE_LIMIT} invoices. Pay once — no
+            subscription.
+          </p>
         {plan === 'pro' ? (
           <p className="mt-6 text-sm">Your unlimited license is already active.</p>
         ) : (
@@ -57,6 +61,7 @@ function UpgradePage() {
             )}
           </div>
         )}
+        </div>
       </div>
     </main>
   )

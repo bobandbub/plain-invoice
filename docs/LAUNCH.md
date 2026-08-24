@@ -8,7 +8,7 @@ Login, invoices, and checkout stay off until production env vars are set on Verc
 
 1. Production project is linked to the GitHub repo. A push to `main` deploys.
 2. Set environment variables from `.env.example` (production values) on Vercel.
-3. After the first lasting deploy, add `https://YOUR_DOMAIN/auth/callback` to Supabase Auth redirect URLs.
+3. After the first lasting deploy, add `https://YOUR_DOMAIN/auth/callback` and `https://YOUR_DOMAIN/auth/update-password` to Supabase Auth redirect URLs.
 4. Set `VITE_APP_URL=https://YOUR_DOMAIN` and redeploy.
 5. In Stripe, add a webhook: `https://YOUR_DOMAIN/api/stripe/webhook`, event `checkout.session.completed`. Paste the signing secret into `STRIPE_WEBHOOK_SECRET`.
 6. To email invoices, add `RESEND_API_KEY` and a verified `RESEND_FROM_EMAIL`.

@@ -77,7 +77,7 @@ export function InvoiceForm({
         onSubmit(form, 'draft')
       }}
     >
-      <div className="island-shell space-y-5 rounded-2xl p-5">
+      <div className="island-shell space-y-5 p-5">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="from_name">From</Label>

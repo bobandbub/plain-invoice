@@ -5,20 +5,22 @@ import * as React from 'react'
 import { cn } from '#/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-md text-sm font-semibold transition-colors disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 rounded-[2px] text-sm font-semibold disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'bg-[var(--sea-ink)] text-white hover:bg-[#0f2c31]',
+        default:
+          'bg-[var(--sea-ink)] text-[var(--stamp-ink)] hover:bg-[#2b2722]',
+        stamp: 'bg-[var(--stamp)] text-[var(--stamp-ink)] hover:bg-[#9a3618]',
         outline:
-          'border border-[var(--line)] bg-white/80 text-[var(--sea-ink)] hover:bg-white',
-        ghost: 'text-[var(--sea-ink-soft)] hover:bg-white/70 hover:text-[var(--sea-ink)]',
-        danger: 'bg-red-700 text-white hover:bg-red-800',
+          'border border-[var(--sea-ink)] bg-transparent text-[var(--sea-ink)] hover:bg-[var(--sea-ink)] hover:text-[var(--stamp-ink)]',
+        ghost: 'text-[var(--sea-ink-soft)] hover:text-[var(--sea-ink)]',
+        danger: 'bg-[var(--stamp)] text-[var(--stamp-ink)] hover:bg-[#9a3618]',
       },
       size: {
         default: 'h-10 px-4',
         sm: 'h-8 px-3 text-xs',
-        lg: 'h-12 px-5',
+        lg: 'h-11 px-5',
       },
     },
     defaultVariants: {

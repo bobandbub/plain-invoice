@@ -17,6 +17,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedUpgradeRouteImport } from './routes/_authed/upgrade'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as AuthUpdatePasswordRouteImport } from './routes/auth.update-password'
 import { Route as IPublicIdRouteImport } from './routes/i.$publicId'
 import { Route as AuthedInvoicesIdRouteImport } from './routes/_authed/invoices.$id'
 import { Route as AuthedInvoicesNewRouteImport } from './routes/_authed/invoices.new'
@@ -61,6 +62,11 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthUpdatePasswordRoute = AuthUpdatePasswordRouteImport.update({
+  id: '/auth/update-password',
+  path: '/auth/update-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IPublicIdRoute = IPublicIdRouteImport.update({
   id: '/i/$publicId',
   path: '/i/$publicId',
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthedDashboardRoute
   '/upgrade': typeof AuthedUpgradeRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/i/$publicId': typeof IPublicIdRoute
   '/invoices/$id': typeof AuthedInvoicesIdRoute
   '/invoices/new': typeof AuthedInvoicesNewRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthedDashboardRoute
   '/upgrade': typeof AuthedUpgradeRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/i/$publicId': typeof IPublicIdRoute
   '/invoices/$id': typeof AuthedInvoicesIdRoute
   '/invoices/new': typeof AuthedInvoicesNewRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/upgrade': typeof AuthedUpgradeRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/i/$publicId': typeof IPublicIdRoute
   '/_authed/invoices/$id': typeof AuthedInvoicesIdRoute
   '/_authed/invoices/new': typeof AuthedInvoicesNewRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/upgrade'
     | '/auth/callback'
+    | '/auth/update-password'
     | '/i/$publicId'
     | '/invoices/$id'
     | '/invoices/new'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/upgrade'
     | '/auth/callback'
+    | '/auth/update-password'
     | '/i/$publicId'
     | '/invoices/$id'
     | '/invoices/new'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/_authed/dashboard'
     | '/_authed/upgrade'
     | '/auth/callback'
+    | '/auth/update-password'
     | '/i/$publicId'
     | '/_authed/invoices/$id'
     | '/_authed/invoices/new'
@@ -173,6 +185,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  AuthUpdatePasswordRoute: typeof AuthUpdatePasswordRoute
   IPublicIdRoute: typeof IPublicIdRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
 }
@@ -235,6 +248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/update-password': {
+      id: '/auth/update-password'
+      path: '/auth/update-password'
+      fullPath: '/auth/update-password'
+      preLoaderRoute: typeof AuthUpdatePasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/i/$publicId': {
       id: '/i/$publicId'
       path: '/i/$publicId'
@@ -290,6 +310,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  AuthUpdatePasswordRoute: AuthUpdatePasswordRoute,
   IPublicIdRoute: IPublicIdRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
 }

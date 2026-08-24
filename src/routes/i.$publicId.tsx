@@ -15,7 +15,7 @@ export const Route = createFileRoute('/i/$publicId')({
   },
   component: PublicInvoicePage,
   notFoundComponent: () => (
-    <main className="page-wrap py-20 text-center">
+    <main className="page-wrap py-16 text-center">
       <h1 className="display-title text-3xl">Invoice not found</h1>
       <p className="mt-2 text-[var(--sea-ink-soft)]">
         Drafts stay private until the sender marks the invoice sent.
@@ -28,7 +28,7 @@ function PublicInvoicePage() {
   const invoice = Route.useLoaderData()
 
   return (
-    <main className="page-wrap page-enter py-10">
+    <main className="page-wrap page-enter py-8">
       <div className="no-print mb-6 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-[var(--sea-ink-soft)]">{APP_NAME}</p>
         <Button onClick={() => window.print()}>Print / Save PDF</Button>
@@ -37,7 +37,9 @@ function PublicInvoicePage() {
       {invoice.payment_link ? (
         <div className="no-print mt-6 text-center">
           <a href={invoice.payment_link} className="no-underline">
-            <Button size="lg">Pay this invoice</Button>
+            <Button size="lg" variant="stamp">
+              Pay this invoice
+            </Button>
           </a>
         </div>
       ) : null}

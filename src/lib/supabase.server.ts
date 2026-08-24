@@ -2,6 +2,8 @@ import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 import { getCookies, setCookie } from '@tanstack/react-start/server'
 
+import { supabaseCookieOptions } from '#/lib/supabase.cookies'
+
 function publicSupabaseConfig() {
   const url = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL
   const anonKey =
@@ -16,10 +18,7 @@ export function createSupabaseServer() {
   const { url, anonKey } = publicSupabaseConfig()
 
   return createServerClient(url, anonKey, {
-    cookieOptions: {
-      path: '/',
-      sameSite: 'lax',
-    },
+    cookieOptions: supabaseCookieOptions,
     cookies: {
       getAll() {
         return Object.entries(getCookies()).map(([name, value]) => ({
@@ -31,8 +30,9 @@ export function createSupabaseServer() {
         for (const { name, value, options } of cookiesToSet) {
           setCookie(name, value, {
             ...options,
-            path: options.path ?? '/',
-            sameSite: options.sameSite ?? 'lax',
+            path: options.path ?? supabaseCookieOptions.path,
+            sameSite: options.sameSite ?? supabaseCookieOptions.sameSite,
+            maxAge: options.maxAge ?? supabaseCookieOptions.maxAge,
           })
         }
       },

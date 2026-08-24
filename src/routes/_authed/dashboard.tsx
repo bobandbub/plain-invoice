@@ -51,10 +51,10 @@ function DashboardPage() {
     : data.invoices
 
   return (
-    <main className="page-wrap page-enter py-10">
+    <main className="page-wrap page-enter py-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="island-kicker">Dashboard</p>
+          <p className="island-kicker">Ledger</p>
           <h1 className="display-title mt-1 text-4xl">Invoices</h1>
           <p className="mt-2 text-sm text-[var(--sea-ink-soft)]">
             {data.plan === 'pro'
@@ -74,37 +74,33 @@ function DashboardPage() {
       </div>
 
       {upgraded ? (
-        <p className="mt-4 rounded-md border border-[var(--line)] bg-white px-4 py-3 text-sm">
+        <p className="notice mt-4">
           {data.plan === 'pro'
             ? 'Payment confirmed. Unlimited invoices are unlocked.'
             : 'Returned from Stripe, but the payment is not confirmed yet. Try refreshing once.'}
         </p>
       ) : null}
 
-      <div className="mt-6 flex gap-2">
+      <div className="mt-6 flex gap-5 text-sm">
         {filters.map((filter) => (
           <Link
             key={filter.id}
             to="/dashboard"
             search={{ status: filter.id === 'all' ? undefined : filter.id }}
-            className={`rounded-full px-3 py-1 text-sm no-underline ${
-              (search.status ?? 'all') === filter.id
-                ? 'bg-[var(--sea-ink)] text-white'
-                : 'bg-white/80 text-[var(--sea-ink-soft)]'
-            }`}
+            className={`filter-tab ${(search.status ?? 'all') === filter.id ? 'is-on' : ''}`}
           >
             {filter.label}
           </Link>
         ))}
       </div>
 
-      <div className="island-shell mt-6 overflow-hidden rounded-2xl">
+      <div className="mt-4 overflow-x-auto">
         {visible.length === 0 ? (
-          <p className="p-8 text-[var(--sea-ink-soft)]">
+          <p className="border-t border-[var(--line)] py-8 text-[var(--sea-ink-soft)]">
             No invoices yet. Create one, email the link, mark it paid.
           </p>
         ) : (
-          <table className="w-full text-sm">
+          <table className="ledger-table w-full text-sm">
             <thead>
               <tr className="border-b border-[var(--line)] text-left text-[var(--sea-ink-soft)]">
                 <th className="px-4 py-3 font-medium">Number</th>
@@ -116,9 +112,9 @@ function DashboardPage() {
             </thead>
             <tbody>
               {visible.map((invoice) => (
-                <tr key={invoice.id} className="border-b border-[var(--line)]/80 transition-colors hover:bg-white/50">
+                <tr key={invoice.id} className="border-b border-[var(--line)]">
                   <td className="px-4 py-3">
-                    <Link to="/invoices/$id" params={{ id: invoice.id }}>
+                    <Link to="/invoices/$id" params={{ id: invoice.id }} className="tabular">
                       {invoice.number}
                     </Link>
                   </td>

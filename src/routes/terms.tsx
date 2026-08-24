@@ -8,7 +8,7 @@ export const Route = createFileRoute('/terms')({
 
 function TermsPage() {
   return (
-    <main className="page-wrap prose py-12">
+    <main className="page-wrap prose py-10">
       <h1 className="display-title">Terms</h1>
       <p>
         {APP_NAME} is provided as-is for creating, emailing, and sharing invoices. You are

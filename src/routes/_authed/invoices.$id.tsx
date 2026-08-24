@@ -55,7 +55,7 @@ function EditInvoicePage() {
           <Link to="/dashboard" className="text-sm">
             ← All invoices
           </Link>
-          <h1 className="display-title mt-2 text-4xl">{invoice.number}</h1>
+          <h1 className="tabular mt-2 text-3xl">{invoice.number}</h1>
           <p className="mt-1 text-sm text-[var(--sea-ink-soft)]">
             {invoice.status === 'draft'
               ? 'Draft — private until you mark it sent or email it'
@@ -74,6 +74,7 @@ function EditInvoicePage() {
           </Button>
           {invoice.status !== 'paid' ? (
             <Button
+              variant="stamp"
               onClick={async () => {
                 await setStatus({ data: { id: invoice.id, status: 'paid' } })
                 await router.invalidate()
@@ -95,13 +96,13 @@ function EditInvoicePage() {
         </div>
       </div>
       {!mailReady ? (
-        <p className="mb-6 rounded-xl border border-[var(--line)] bg-white/80 px-4 py-3 text-sm text-[var(--sea-ink-soft)]">
+        <p className="notice mb-6">
           Email is off until <code>RESEND_API_KEY</code> is set. Copy the public
           link instead.
         </p>
       ) : null}
       {emailed ? (
-        <p className="mb-6 rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-sm">
+        <p className="notice mb-6">
           Sent to {invoice.to_email}.
         </p>
       ) : null}

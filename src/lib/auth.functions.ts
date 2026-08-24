@@ -15,11 +15,39 @@ const otpTypes = [
   'email_change',
 ] as const satisfies ReadonlyArray<EmailOtpType>
 
+const authCodeSchema = z.object({
+  code: z.string().optional(),
+  token_hash: z.string().optional(),
+  type: z.string().optional(),
+})
+
+type AuthCodeInput = z.infer<typeof authCodeSchema>
+
 function asOtpType(value: string | undefined): EmailOtpType {
   if (value && otpTypes.some((item) => item === value)) {
     return value
   }
   return 'email'
+}
+
+async function exchangeAuthCodeData(data: AuthCodeInput) {
+  if (!data.code && !data.token_hash) return
+
+  const supabase = createSupabaseServer()
+
+  if (data.code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(data.code)
+    if (error) throw new Error(error.message)
+    return
+  }
+
+  if (!data.token_hash) return
+
+  const { error } = await supabase.auth.verifyOtp({
+    token_hash: data.token_hash,
+    type: asOtpType(data.type),
+  })
+  if (error) throw new Error(error.message)
 }
 
 export const getAuthUser = createServerFn({ method: 'GET' }).handler(
@@ -37,29 +65,31 @@ export const getAuthUser = createServerFn({ method: 'GET' }).handler(
   },
 )
 
-export const completeMagicLink = createServerFn({ method: 'GET' })
-  .validator(
-    z.object({
-      code: z.string().optional(),
-      token_hash: z.string().optional(),
-      type: z.string().optional(),
-    }),
-  )
-  .handler(async ({ data }) => {
+export const signOut = createServerFn({ method: 'POST' }).handler(async () => {
+  try {
     const supabase = createSupabaseServer()
+    await supabase.auth.signOut()
+  } catch {
+    // Already signed out, or cookies were missing.
+  }
+})
 
-    if (data.code) {
-      const { error } = await supabase.auth.exchangeCodeForSession(data.code)
-      if (error) throw new Error(error.message)
-    } else if (data.token_hash) {
-      const { error } = await supabase.auth.verifyOtp({
-        token_hash: data.token_hash,
-        type: asOtpType(data.type),
-      })
-      if (error) throw new Error(error.message)
-    } else {
-      throw new Error('Missing login code. Request a new magic link.')
+export const exchangeAuthCode = createServerFn({ method: 'GET' })
+  .validator(authCodeSchema)
+  .handler(async ({ data }) => {
+    await exchangeAuthCodeData(data)
+  })
+
+export const completeMagicLink = createServerFn({ method: 'GET' })
+  .validator(authCodeSchema)
+  .handler(async ({ data }) => {
+    if (!data.code && !data.token_hash) {
+      throw new Error('Missing login code. Request a new email and try again.')
     }
 
-    throw redirect({ to: '/dashboard' })
+    await exchangeAuthCodeData(data)
+
+    throw redirect({
+      to: data.type === 'recovery' ? '/auth/update-password' : '/dashboard',
+    })
   })

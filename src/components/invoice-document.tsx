@@ -62,17 +62,19 @@ export function InvoiceDocument({
   const total = invoiceTotalCents(invoice.line_items)
 
   return (
-    <article className="invoice-paper relative overflow-hidden rounded-xl border border-[var(--line)] bg-white p-8 text-[var(--sea-ink)] shadow-sm md:p-10">
+    <article className="invoice-paper relative overflow-hidden border border-[var(--line)] bg-[var(--surface-strong)] p-7 text-[var(--sea-ink)] md:p-9">
       {watermark ? (
-        <div className="pointer-events-none absolute inset-0 grid place-items-center text-5xl font-bold tracking-[0.3em] text-[var(--sea-ink)]/10 uppercase">
-          DUE
+        <div className="pointer-events-none absolute inset-0 grid place-items-center font-[Fraunces] text-6xl italic text-[var(--stamp)]/15">
+          due
         </div>
       ) : null}
-      <header className="flex flex-wrap items-start justify-between gap-6 border-b border-[var(--line)] pb-6">
+      <header className="flex flex-wrap items-start justify-between gap-6 border-b border-[var(--line)] pb-5">
         <div>
           <p className="island-kicker">Invoice</p>
-          <h1 className="display-title mt-1 text-3xl">{invoice.number}</h1>
-          <p className="mt-1 text-sm capitalize text-[var(--sea-ink-soft)]">{invoice.status}</p>
+          <h1 className="tabular mt-2 text-xl">{invoice.number}</h1>
+          <p className="mt-2">
+            <span className={`status-pill status-pill-${invoice.status}`}>{invoice.status}</span>
+          </p>
         </div>
         <div className="text-right text-sm">
           <p className="font-semibold">{invoice.from_name || 'Your name'}</p>
@@ -134,7 +136,7 @@ export function InvoiceDocument({
         </tbody>
       </table>
 
-      <p className="mt-6 text-right text-lg font-semibold">
+      <p className="mt-6 text-right font-[Fraunces] text-2xl tracking-tight">
         Total {formatMoney(total, invoice.currency)}
       </p>
 
