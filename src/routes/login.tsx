@@ -43,7 +43,7 @@ function LoginPage() {
 
   if (!configured) {
     return (
-      <main className="page-wrap py-16">
+      <main className="page-wrap page-enter py-16">
         <div className="island-shell mx-auto max-w-lg rounded-2xl p-8">
           <h1 className="display-title text-3xl">Set up {APP_NAME} first</h1>
           <p className="mt-3 text-[var(--sea-ink-soft)]">
@@ -57,7 +57,7 @@ function LoginPage() {
   }
 
   return (
-    <main className="page-wrap py-16">
+    <main className="page-wrap page-enter py-16">
       <div className="island-shell mx-auto max-w-md rounded-2xl p-8">
         <p className="island-kicker">Magic link</p>
         <h1 className="display-title mt-2 text-3xl">Log in to {APP_NAME}</h1>

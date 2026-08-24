@@ -1,14 +1,17 @@
 import { z } from 'zod'
 import { createServerFn } from '@tanstack/react-start'
+import { getRequestUrl } from '@tanstack/react-start/server'
 
-import { FREE_INVOICE_LIMIT } from '#/lib/config'
+import { APP_NAME, FREE_INVOICE_LIMIT } from '#/lib/config'
 import {
   invoiceInputSchema,
+  invoiceTotalCents,
   mapInvoice,
   mapListItem,
   nextInvoiceNumber,
   publicId,
 } from '#/lib/invoices'
+import { isMailConfigured, sendInvoiceMail } from '#/lib/mail'
 import { createSupabaseServer, requireUser } from '#/lib/supabase.server'
 import { FREE_LIMIT_CODE } from '#/lib/types'
 import type { Invoice, InvoiceListItem, Plan } from '#/lib/types'
@@ -224,5 +227,58 @@ export const deleteInvoice = createServerFn({ method: 'POST' })
       .eq('id', data.id)
       .eq('user_id', user.id)
     if (error) throw new Error(error.message)
+    return { ok: true as const }
+  })
+
+export const getMailStatus = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<{ mailReady: boolean }> => {
+    await requireUser()
+    return { mailReady: isMailConfigured() }
+  },
+)
+
+export const emailInvoice = createServerFn({ method: 'POST' })
+  .validator(zId)
+  .handler(async ({ data }): Promise<{ ok: true }> => {
+    const { supabase, user } = await requireUser()
+    const { data: row, error } = await supabase
+      .from('invoices')
+      .select('*, line_items(*)')
+      .eq('id', data.id)
+      .eq('user_id', user.id)
+      .maybeSingle()
+
+    if (error) throw new Error(error.message)
+    if (!row) throw new Error('NOT_FOUND')
+
+    const invoice = mapInvoice(row as Record<string, unknown>)
+    const to = invoice.to_email.trim()
+    if (!to || !to.includes('@')) {
+      throw new Error('Add a client email and save before sending.')
+    }
+
+    if (invoice.status === 'draft') {
+      const { error: statusError } = await supabase
+        .from('invoices')
+        .update({ status: 'sent' })
+        .eq('id', invoice.id)
+        .eq('user_id', user.id)
+      if (statusError) throw new Error(statusError.message)
+    }
+
+    const origin =
+      process.env.VITE_APP_URL ?? process.env.APP_URL ?? getRequestUrl().origin
+
+    await sendInvoiceMail({
+      to,
+      replyTo: invoice.from_email,
+      fromName: invoice.from_name || APP_NAME,
+      clientName: invoice.to_name || 'there',
+      number: invoice.number,
+      totalCents: invoiceTotalCents(invoice.line_items),
+      currency: invoice.currency,
+      publicUrl: `${origin.replace(/\/$/, '')}/i/${invoice.public_id}`,
+    })
+
     return { ok: true as const }
   })

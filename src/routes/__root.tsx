@@ -8,7 +8,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import { SiteFooter, SiteHeader } from '#/components/site-chrome'
-import { APP_NAME } from '#/lib/config'
+import { APP_NAME, APP_TAGLINE } from '#/lib/config'
 import { getAuthUser } from '#/lib/auth.functions'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
@@ -34,7 +34,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
       {
         name: 'description',
-        content: 'Send a clean invoice and know if it was paid.',
+        content: APP_TAGLINE,
       },
     ],
     links: [

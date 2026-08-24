@@ -65,7 +65,7 @@ export function InvoiceDocument({
     <article className="invoice-paper relative overflow-hidden rounded-xl border border-[var(--line)] bg-white p-8 text-[var(--sea-ink)] shadow-sm md:p-10">
       {watermark ? (
         <div className="pointer-events-none absolute inset-0 grid place-items-center text-5xl font-bold tracking-[0.3em] text-[var(--sea-ink)]/10 uppercase">
-          PLAIN
+          DUE
         </div>
       ) : null}
       <header className="flex flex-wrap items-start justify-between gap-6 border-b border-[var(--line)] pb-6">

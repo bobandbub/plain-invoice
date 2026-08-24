@@ -36,11 +36,11 @@ function Home() {
         <div className="rise-in">
           <p className="island-kicker">For solo freelancers</p>
           <h1 className="display-title mt-3 text-5xl leading-tight md:text-6xl">
-            Send a clean invoice and know if it was paid.
+            Send a due link. Know if it was paid.
           </h1>
           <p className="mt-5 max-w-xl text-lg text-[var(--sea-ink-soft)]">
-            {APP_NAME} is one job: make a bill, share a link, download a PDF, mark it
-            paid. {FREE_INVOICE_LIMIT} free invoices, then {PRO_PRICE_LABEL} for
+            {APP_NAME} is one job: write a bill, email the link, mark it paid.{' '}
+            {FREE_INVOICE_LIMIT} free invoices, then {PRO_PRICE_LABEL} for
             unlimited.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -54,23 +54,30 @@ function Home() {
             </a>
           </div>
         </div>
-        <InvoiceDocument invoice={sampleInvoice} />
+        <div className="rise-in rise-in-delay-2">
+          <InvoiceDocument invoice={sampleInvoice} />
+        </div>
       </section>
 
       <section className="mt-20 grid gap-4 md:grid-cols-3">
-        {[
-          ['Write it', 'Name, client, line items, due date. That is the whole form.'],
-          ['Share it', 'A public link your client can open. Print or Save as PDF.'],
-          ['Mark it paid', 'You get paid however you already get paid. We just keep the record.'],
-        ].map(([title, body]) => (
-          <article key={title} className="feature-card rounded-2xl border border-[var(--line)] p-5">
+        {(
+          [
+            ['Write it', 'Name, client, line items, due date. That is the whole form.', 'rise-in-delay-1'],
+            ['Email it', 'One email with the public link. No inbox. Replies go to you.', 'rise-in-delay-2'],
+            ['Mark it paid', 'You get paid however you already get paid. We just keep the record.', 'rise-in-delay-3'],
+          ] as const
+        ).map(([title, body, delay]) => (
+          <article
+            key={title}
+            className={`feature-card rise-in ${delay} rounded-2xl border border-[var(--line)] p-5`}
+          >
             <h2 className="display-title text-2xl">{title}</h2>
             <p className="mt-2 text-[var(--sea-ink-soft)]">{body}</p>
           </article>
         ))}
       </section>
 
-      <section id="pricing" className="island-shell mt-20 rounded-3xl p-8 md:p-10">
+      <section id="pricing" className="island-shell rise-in mt-20 rounded-3xl p-8 md:p-10">
         <p className="island-kicker">Pricing</p>
         <h2 className="display-title mt-2 text-4xl">Three free. Then {PRO_PRICE_LABEL}.</h2>
         <p className="mt-3 max-w-xl text-[var(--sea-ink-soft)]">
@@ -78,7 +85,8 @@ function Home() {
           Payment Link on the invoice if you want them to pay online.
         </p>
         <ul className="mt-6 space-y-2 text-sm">
-          <li>Public invoice page with print-to-PDF</li>
+          <li>Email the invoice link, or copy it yourself</li>
+          <li>Public page with print-to-PDF</li>
           <li>Draft / sent / paid statuses</li>
           <li>Unlimited invoices after the one-time license</li>
         </ul>

@@ -34,6 +34,7 @@ export function InvoiceForm({
   error,
   onSubmit,
   showMarkSent = false,
+  showEmail = false,
   saveLabel = 'Save draft',
   status = 'draft',
 }: {
@@ -41,8 +42,9 @@ export function InvoiceForm({
   number?: string
   submitting?: boolean
   error?: string | null
-  onSubmit: (input: InvoiceInput, intent: 'draft' | 'sent') => void
+  onSubmit: (input: InvoiceInput, intent: 'draft' | 'sent' | 'email') => void
   showMarkSent?: boolean
+  showEmail?: boolean
   saveLabel?: string
   status?: InvoiceStatus
 }) {
@@ -234,10 +236,20 @@ export function InvoiceForm({
           {showMarkSent ? (
             <Button
               type="button"
+              variant="outline"
               disabled={submitting}
               onClick={() => onSubmit(form, 'sent')}
             >
-              {submitting ? 'Saving…' : 'Mark sent'}
+              Mark sent
+            </Button>
+          ) : null}
+          {showEmail ? (
+            <Button
+              type="button"
+              disabled={submitting}
+              onClick={() => onSubmit(form, 'email')}
+            >
+              {submitting ? 'Sending…' : 'Email invoice'}
             </Button>
           ) : null}
         </div>

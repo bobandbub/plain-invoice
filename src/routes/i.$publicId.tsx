@@ -28,7 +28,7 @@ function PublicInvoicePage() {
   const invoice = Route.useLoaderData()
 
   return (
-    <main className="page-wrap py-10">
+    <main className="page-wrap page-enter py-10">
       <div className="no-print mb-6 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-[var(--sea-ink-soft)]">{APP_NAME}</p>
         <Button onClick={() => window.print()}>Print / Save PDF</Button>

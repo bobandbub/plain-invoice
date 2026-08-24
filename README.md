@@ -1,6 +1,6 @@
-# Plain Invoice
+# Due Link
 
-Send a clean invoice and know if it was paid.
+Send a due link and know if it was paid.
 
 Three free invoices. Then **$29 once** for unlimited. We do not collect your client’s payment — paste your own Stripe Payment Link on the invoice if you want them to pay online.
 
@@ -11,6 +11,7 @@ Three free invoices. Then **$29 once** for unlimited. We do not collect your cli
 - Tailwind CSS
 - Supabase (magic-link auth + Postgres + RLS)
 - Stripe Checkout (one-time license)
+- Resend (one email per invoice, optional)
 
 ## Local setup
 
@@ -26,7 +27,8 @@ cp .env.example .env
    - `http://localhost:3000/auth/callback`
    - your production URL `/auth/callback`
 5. (Optional, to take money) add `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`. Point the webhook at `/api/stripe/webhook` for `checkout.session.completed`.
-6. Set `VITE_APP_URL` to the public origin before deploying.
+6. (Optional, to email invoices) add `RESEND_API_KEY`. For production, verify a domain and set `RESEND_FROM_EMAIL`.
+7. Set `VITE_APP_URL` to the public origin before deploying.
 
 ```sh
 npm run dev
@@ -45,7 +47,7 @@ Opens at http://localhost:3000.
 
 ## Product scope (frozen)
 
-This app does one job: create an invoice, share a public link, print/save PDF, mark paid. Do not add expenses, taxes, time tracking, client portals, or Stripe Connect.
+This app does one job: create an invoice, email or share a public link, print/save PDF, mark paid. Do not add expenses, taxes, time tracking, client portals, in-app messaging, or Stripe Connect.
 
 ## Deploy
 

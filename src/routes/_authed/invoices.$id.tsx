@@ -4,21 +4,35 @@ import { useState } from 'react'
 
 import { InvoiceForm } from '#/components/invoice-form'
 import { Button } from '#/components/ui/button'
-import { getInvoice, saveInvoice, setInvoiceStatus } from '#/lib/invoices.functions'
+import {
+  emailInvoice,
+  getInvoice,
+  getMailStatus,
+  saveInvoice,
+  setInvoiceStatus,
+} from '#/lib/invoices.functions'
 
 export const Route = createFileRoute('/_authed/invoices/$id')({
-  loader: ({ params }) => getInvoice({ data: { id: params.id } }),
+  loader: async ({ params }) => {
+    const [invoice, mail] = await Promise.all([
+      getInvoice({ data: { id: params.id } }),
+      getMailStatus(),
+    ])
+    return { invoice, mailReady: mail.mailReady }
+  },
   component: EditInvoicePage,
 })
 
 function EditInvoicePage() {
-  const invoice = Route.useLoaderData()
+  const { invoice, mailReady } = Route.useLoaderData()
   const router = useRouter()
   const save = useServerFn(saveInvoice)
   const setStatus = useServerFn(setInvoiceStatus)
+  const emailClient = useServerFn(emailInvoice)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [emailed, setEmailed] = useState(false)
   const publicUrl =
     typeof window === 'undefined'
       ? `/i/${invoice.public_id}`
@@ -35,7 +49,7 @@ function EditInvoicePage() {
   }
 
   return (
-    <main className="page-wrap py-10">
+    <main className="page-wrap page-enter py-10">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link to="/dashboard" className="text-sm">
@@ -44,7 +58,7 @@ function EditInvoicePage() {
           <h1 className="display-title mt-2 text-4xl">{invoice.number}</h1>
           <p className="mt-1 text-sm text-[var(--sea-ink-soft)]">
             {invoice.status === 'draft'
-              ? 'Draft — private until you mark it sent'
+              ? 'Draft — private until you mark it sent or email it'
               : invoice.status === 'paid'
                 ? 'Paid'
                 : 'Sent'}
@@ -80,6 +94,17 @@ function EditInvoicePage() {
           )}
         </div>
       </div>
+      {!mailReady ? (
+        <p className="mb-6 rounded-xl border border-[var(--line)] bg-white/80 px-4 py-3 text-sm text-[var(--sea-ink-soft)]">
+          Email is off until <code>RESEND_API_KEY</code> is set. Copy the public
+          link instead.
+        </p>
+      ) : null}
+      {emailed ? (
+        <p className="mb-6 rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-sm">
+          Sent to {invoice.to_email}.
+        </p>
+      ) : null}
       <InvoiceForm
         initial={{
           id: invoice.id,
@@ -104,14 +129,20 @@ function EditInvoicePage() {
         submitting={busy}
         error={error}
         showMarkSent={invoice.status === 'draft'}
+        showEmail={mailReady}
         saveLabel={invoice.status === 'draft' ? 'Save draft' : 'Save changes'}
         onSubmit={async (input, intent) => {
           setBusy(true)
           setError(null)
+          setEmailed(false)
           try {
             await save({ data: { ...input, id: invoice.id } })
             if (intent === 'sent' && invoice.status === 'draft') {
               await setStatus({ data: { id: invoice.id, status: 'sent' } })
+            }
+            if (intent === 'email') {
+              await emailClient({ data: { id: invoice.id } })
+              setEmailed(true)
             }
             await router.invalidate()
           } catch (err) {

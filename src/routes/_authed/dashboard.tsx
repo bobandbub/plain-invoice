@@ -51,7 +51,7 @@ function DashboardPage() {
     : data.invoices
 
   return (
-    <main className="page-wrap py-10">
+    <main className="page-wrap page-enter py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="island-kicker">Dashboard</p>
@@ -101,7 +101,7 @@ function DashboardPage() {
       <div className="island-shell mt-6 overflow-hidden rounded-2xl">
         {visible.length === 0 ? (
           <p className="p-8 text-[var(--sea-ink-soft)]">
-            No invoices yet. Create one, share the link, mark it paid.
+            No invoices yet. Create one, email the link, mark it paid.
           </p>
         ) : (
           <table className="w-full text-sm">
@@ -116,14 +116,18 @@ function DashboardPage() {
             </thead>
             <tbody>
               {visible.map((invoice) => (
-                <tr key={invoice.id} className="border-b border-[var(--line)]/80">
+                <tr key={invoice.id} className="border-b border-[var(--line)]/80 transition-colors hover:bg-white/50">
                   <td className="px-4 py-3">
                     <Link to="/invoices/$id" params={{ id: invoice.id }}>
                       {invoice.number}
                     </Link>
                   </td>
                   <td className="px-4 py-3">{invoice.to_name}</td>
-                  <td className="px-4 py-3 capitalize">{invoice.status}</td>
+                  <td className="px-4 py-3">
+                    <span className={`status-pill status-pill-${invoice.status}`}>
+                      {invoice.status}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-right">{formatMoney(invoice.total_cents)}</td>
                   <td className="px-4 py-3 text-right">
                     <Button

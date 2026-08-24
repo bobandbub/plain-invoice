@@ -11,7 +11,7 @@ function TermsPage() {
     <main className="page-wrap prose py-12">
       <h1 className="display-title">Terms</h1>
       <p>
-        {APP_NAME} is provided as-is for creating and sharing invoices. You are
+        {APP_NAME} is provided as-is for creating, emailing, and sharing invoices. You are
         responsible for the accuracy of your invoices and for collecting payment from
         your clients. The optional paid license unlocks more than {FREE_INVOICE_LIMIT}{' '}
         invoices; it is not tax, accounting, or legal advice. The free plan includes{' '}

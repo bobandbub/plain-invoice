@@ -1,6 +1,7 @@
 import { Link, useRouterState } from '@tanstack/react-router'
 
-import { APP_NAME } from '#/lib/config'
+import { BrandMark } from '#/components/brand-mark'
+import { APP_NAME, APP_TAGLINE } from '#/lib/config'
 import type { AuthUser } from '#/lib/types'
 
 export function SiteHeader({ user }: { user: AuthUser | null }) {
@@ -10,11 +11,9 @@ export function SiteHeader({ user }: { user: AuthUser | null }) {
   if (printable) return null
 
   return (
-    <header className="no-print sticky top-0 z-20 border-b border-[var(--line)] bg-[var(--header-bg)] backdrop-blur">
+    <header className="no-print sticky top-0 z-20 border-b border-[var(--line)] bg-[var(--header-bg)] backdrop-blur-md">
       <div className="page-wrap flex h-16 items-center justify-between">
-        <Link to="/" className="display-title text-xl font-bold text-[var(--sea-ink)] no-underline">
-          {APP_NAME}
-        </Link>
+        <BrandMark />
         <nav className="flex items-center gap-4 text-sm">
           {user ? (
             <>
@@ -30,10 +29,13 @@ export function SiteHeader({ user }: { user: AuthUser | null }) {
             </>
           ) : (
             <>
-              <a href="#pricing" className="nav-link">
+              <a href="/#pricing" className="nav-link">
                 Pricing
               </a>
-              <Link to="/login" className="rounded-md bg-[var(--sea-ink)] px-3 py-2 font-semibold text-white no-underline hover:text-white">
+              <Link
+                to="/login"
+                className="rounded-md bg-[var(--sea-ink)] px-3 py-2 font-semibold text-white no-underline transition-transform duration-200 hover:-translate-y-0.5 hover:text-white"
+              >
                 Log in
               </Link>
             </>
@@ -51,7 +53,9 @@ export function SiteFooter() {
   return (
     <footer className="no-print site-footer mt-16">
       <div className="page-wrap flex flex-wrap items-center justify-between gap-3 py-8 text-sm text-[var(--sea-ink-soft)]">
-        <p>{APP_NAME} — send a clean invoice and know if it was paid.</p>
+        <p>
+          {APP_NAME} — {APP_TAGLINE}
+        </p>
         <div className="flex gap-4">
           <Link to="/privacy">Privacy</Link>
           <Link to="/terms">Terms</Link>

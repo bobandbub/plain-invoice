@@ -12,9 +12,9 @@ function PrivacyPage() {
       <h1 className="display-title">Privacy</h1>
       <p>
         {APP_NAME} stores the email you use to sign in, the invoices you create, and
-        (if you upgrade) a Stripe customer id. We do not store card numbers. Magic-link
-        auth is handled by Supabase. Payments for the unlimited license are handled by
-        Stripe.
+        (if you upgrade) a Stripe customer id. If you click Email invoice, we send that
+        invoice link to the client address you entered. We do not store card numbers.
+        Magic-link auth is handled by Supabase. License payments are handled by Stripe.
       </p>
       <p>
         Public invoice links are unguessable but not password-protected. Do not put

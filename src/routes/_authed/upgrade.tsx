@@ -18,7 +18,7 @@ function UpgradePage() {
   const [busy, setBusy] = useState(false)
 
   return (
-    <main className="page-wrap py-16">
+    <main className="page-wrap page-enter py-16">
       <div className="island-shell mx-auto max-w-lg rounded-3xl p-8">
         <p className="island-kicker">Upgrade</p>
         <h1 className="display-title mt-2 text-4xl">Unlimited invoices, {PRO_PRICE_LABEL}.</h1>
