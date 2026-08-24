@@ -19,49 +19,52 @@ function UpgradePage() {
 
   return (
     <main className="page-wrap page-enter py-10">
-      <div className="price-ledger max-w-3xl">
+      <p className="island-kicker">Upgrade</p>
+      <h1 className="display-title mt-3 text-4xl">
+        Once, then <em>unlimited</em>.
+      </h1>
+      <div className="pricing-box mt-10 max-w-3xl">
         <div>
-          <p className="island-kicker">Upgrade</p>
-          <p className="price-figure mt-3">$29</p>
-          <p className="display-title mt-2 text-3xl">once, then <em>unlimited</em>.</p>
-        </div>
-        <div>
-          <p className="text-[var(--sea-ink-soft)]">
-            The free plan includes {FREE_INVOICE_LIMIT} invoices. Pay once — no
-            subscription.
+          <p className="amt">
+            <span className="free">{FREE_INVOICE_LIMIT} invoices free</span>
+            {' — then '}
+            <b>{PRO_PRICE_LABEL}</b>
+            {', for unlimited. No subscription line item.'}
           </p>
-        {plan === 'pro' ? (
-          <p className="mt-6 text-sm">Your unlimited license is already active.</p>
-        ) : (
-          <div className="mt-8">
-            {error ? <p className="mb-3 text-sm text-red-700">{error}</p> : null}
-            {!stripeReady ? (
-              <p className="text-sm text-[var(--sea-ink-soft)]">
-                Add <code>STRIPE_SECRET_KEY</code> to enable checkout. Until then the
-                paywall still blocks a 4th free invoice.
-              </p>
-            ) : (
-              <Button
-                size="lg"
-                disabled={busy}
-                onClick={async () => {
-                  setBusy(true)
-                  setError(null)
-                  try {
-                    const { url } = await checkout()
-                    window.location.href = url
-                  } catch (err) {
-                    setError(err instanceof Error ? err.message : 'Checkout failed')
-                    setBusy(false)
-                  }
-                }}
-              >
-                {busy ? 'Redirecting…' : `Pay ${PRO_PRICE_LABEL}`}
-              </Button>
-            )}
-          </div>
-        )}
+          <p className="mt-2 text-sm text-[var(--sea-ink-soft)]">
+            Pay once. We do not collect your client’s payment.
+          </p>
+          {error ? <p className="mt-3 text-sm text-red-700">{error}</p> : null}
+          {plan === 'pro' ? (
+            <p className="mt-3 text-sm">Your unlimited license is already active.</p>
+          ) : null}
+          {!stripeReady && plan !== 'pro' ? (
+            <p className="mt-3 text-sm text-[var(--sea-ink-soft)]">
+              Add <code>STRIPE_SECRET_KEY</code> to enable checkout. Until then the
+              paywall still blocks a 4th free invoice.
+            </p>
+          ) : null}
         </div>
+        {plan !== 'pro' && stripeReady ? (
+          <Button
+            size="lg"
+            className="has-arrow"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true)
+              setError(null)
+              try {
+                const { url } = await checkout()
+                window.location.href = url
+              } catch (err) {
+                setError(err instanceof Error ? err.message : 'Checkout failed')
+                setBusy(false)
+              }
+            }}
+          >
+            {busy ? 'Redirecting…' : `Pay ${PRO_PRICE_LABEL}`}
+          </Button>
+        ) : null}
       </div>
     </main>
   )

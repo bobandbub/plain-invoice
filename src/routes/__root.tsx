@@ -12,7 +12,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Analytics } from '@vercel/analytics/react'
 
 import { SiteFooter, SiteHeader } from '#/components/site-chrome'
-import { APP_NAME, APP_TAGLINE } from '#/lib/config'
+import { APP_NAME, APP_DESCRIPTION } from '#/lib/config'
 import { getAuthUser } from '#/lib/auth.functions'
 import { createSupabaseBrowser, isSupabaseConfigured } from '#/lib/supabase.browser'
 import type { AuthUser } from '#/lib/types'
@@ -44,7 +44,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
       {
         name: 'description',
-        content: APP_TAGLINE,
+        content: APP_DESCRIPTION,
       },
     ],
     links: [

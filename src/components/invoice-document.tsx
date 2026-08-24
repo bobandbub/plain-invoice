@@ -60,72 +60,80 @@ export function InvoiceDocument({
   watermark?: boolean
 }) {
   const total = invoiceTotalCents(invoice.line_items)
+  const paid = invoice.status === 'paid'
 
   return (
-    <article className="invoice-paper relative overflow-hidden border border-[var(--line)] bg-[var(--surface-strong)] p-7 text-[var(--sea-ink)] md:p-9">
+    <article className="invoice-paper relative overflow-visible rounded-[5px] border border-[var(--sea-ink)] bg-[var(--surface-strong)] p-7 text-[var(--sea-ink)] shadow-[7px_8px_0_rgba(26,30,39,0.88)] md:p-8">
       {watermark ? (
-        <div className="pointer-events-none absolute inset-0 grid place-items-center font-[Fraunces] text-6xl italic text-[var(--stamp)]/15">
+        <div className="pointer-events-none absolute inset-0 grid place-items-center font-mono text-6xl uppercase tracking-[0.2em] text-[var(--stamp)]/15">
           due
         </div>
       ) : null}
-      <header className="flex flex-wrap items-start justify-between gap-6 border-b border-[var(--line)] pb-5">
-        <div>
-          <p className="island-kicker">Invoice</p>
-          <h1 className="tabular mt-2 text-xl">{invoice.number}</h1>
-          <p className="mt-2">
-            <span className={`status-pill status-pill-${invoice.status}`}>{invoice.status}</span>
-          </p>
+      {paid ? (
+        <div className="rubber-stamp" aria-hidden="true">
+          PAID
         </div>
-        <div className="text-right text-sm">
-          <p className="font-semibold">{invoice.from_name || 'Your name'}</p>
+      ) : null}
+
+      <header className="flex flex-wrap items-start justify-between gap-6">
+        <div>
+          <p className="font-mono text-[0.7rem] tracking-[0.12em] uppercase text-[var(--sea-ink-soft)]">
+            Invoice
+          </p>
+          <h1 className="mt-1.5 font-mono text-[0.95rem] font-semibold">{invoice.number}</h1>
+          {paid ? null : (
+            <p className="mt-2">
+              <span className={`status-pill status-pill-${invoice.status}`}>{invoice.status}</span>
+            </p>
+          )}
+        </div>
+        <div className="text-right text-sm text-[var(--sea-ink-soft)]">
+          <p className="font-semibold text-[var(--sea-ink)]">{invoice.from_name || 'Your name'}</p>
           {invoice.from_email ? <p>{invoice.from_email}</p> : null}
           {invoice.from_address ? (
-            <p className="whitespace-pre-line text-[var(--sea-ink-soft)]">{invoice.from_address}</p>
+            <p className="whitespace-pre-line">{invoice.from_address}</p>
           ) : null}
         </div>
       </header>
 
-      <div className="mt-6 grid gap-6 sm:grid-cols-2">
-        <div>
-          <p className="island-kicker">Bill to</p>
-          <p className="mt-1 font-semibold">{invoice.to_name || 'Client name'}</p>
-          {invoice.to_email ? <p className="text-sm">{invoice.to_email}</p> : null}
-          {invoice.to_address ? (
-            <p className="whitespace-pre-line text-sm text-[var(--sea-ink-soft)]">
-              {invoice.to_address}
-            </p>
-          ) : null}
-        </div>
-        <div className="text-sm sm:text-right">
-          <p>
-            <span className="text-[var(--sea-ink-soft)]">Issued </span>
-            {formatDate(invoice.created_at)}
-          </p>
-          <p>
-            <span className="text-[var(--sea-ink-soft)]">Due </span>
-            {formatDate(invoice.due_date)}
-          </p>
-        </div>
-      </div>
+      <hr className="my-5 border-0 border-t border-[var(--line)]" />
 
-      <table className="mt-8 w-full text-sm">
+      <div className="mb-5 flex flex-wrap justify-between gap-3 font-mono text-xs text-[var(--sea-ink-soft)]">
+        <span>
+          Bill to <b className="font-semibold text-[var(--sea-ink)]">{invoice.to_name || 'Client name'}</b>
+        </span>
+        <span>
+          Due <b className="font-semibold text-[var(--sea-ink)]">{formatDate(invoice.due_date)}</b>
+        </span>
+      </div>
+      {invoice.to_email || invoice.to_address ? (
+        <p className="-mt-3 mb-5 text-sm text-[var(--sea-ink-soft)]">
+          {invoice.to_email}
+          {invoice.to_email && invoice.to_address ? ' · ' : null}
+          {invoice.to_address ? (
+            <span className="whitespace-pre-line">{invoice.to_address}</span>
+          ) : null}
+        </p>
+      ) : null}
+
+      <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-[var(--line)] text-left text-[var(--sea-ink-soft)]">
-            <th className="py-2 font-medium">Description</th>
-            <th className="py-2 text-right font-medium">Qty</th>
-            <th className="py-2 text-right font-medium">Rate</th>
-            <th className="py-2 text-right font-medium">Amount</th>
+          <tr className="border-b border-[var(--sea-ink)] text-left font-mono text-[0.66rem] tracking-[0.08em] text-[var(--sea-ink-soft)] uppercase">
+            <th className="pb-2 font-medium">Description</th>
+            <th className="pb-2 text-right font-medium">Qty</th>
+            <th className="pb-2 text-right font-medium">Rate</th>
+            <th className="pb-2 text-right font-medium">Amount</th>
           </tr>
         </thead>
         <tbody>
           {invoice.line_items.map((item, index) => (
-            <tr key={index} className="border-b border-[var(--line)]/70">
-              <td className="py-3">{item.description || '—'}</td>
-              <td className="py-3 text-right">{item.quantity}</td>
-              <td className="py-3 text-right">
+            <tr key={index} className="border-b border-[var(--line)]">
+              <td className="py-2.5">{item.description || '—'}</td>
+              <td className="py-2.5 text-right">{item.quantity}</td>
+              <td className="py-2.5 text-right">
                 {formatMoney(item.unit_amount_cents, invoice.currency)}
               </td>
-              <td className="py-3 text-right">
+              <td className="py-2.5 text-right">
                 {formatMoney(
                   lineTotalCents(item.quantity, item.unit_amount_cents),
                   invoice.currency,
@@ -136,19 +144,23 @@ export function InvoiceDocument({
         </tbody>
       </table>
 
-      <p className="mt-6 text-right font-[Fraunces] text-2xl tracking-tight">
-        Total {formatMoney(total, invoice.currency)}
-      </p>
+      <div className="mt-5 flex items-baseline justify-between">
+        <span className="font-mono text-xs tracking-[0.08em] text-[var(--sea-ink-soft)] uppercase">
+          Total due
+        </span>
+        <span className="font-mono text-[1.6rem] font-bold">
+          {formatMoney(total, invoice.currency)}
+        </span>
+      </div>
 
       {invoice.notes ? (
-        <section className="mt-8 text-sm">
-          <p className="island-kicker">Notes</p>
-          <p className="mt-1 whitespace-pre-line text-[var(--sea-ink-soft)]">{invoice.notes}</p>
-        </section>
+        <p className="mt-5 border-t border-dashed border-[var(--line)] pt-4 text-[0.8rem] text-[var(--sea-ink-soft)] whitespace-pre-line">
+          {invoice.notes}
+        </p>
       ) : null}
 
       {invoice.payment_link ? (
-        <p className="mt-6 text-sm">
+        <p className="mt-4 text-sm">
           Pay:{' '}
           <a href={invoice.payment_link} className="break-all">
             {invoice.payment_link}

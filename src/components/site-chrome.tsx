@@ -14,10 +14,10 @@ export function SiteHeader({ user }: { user: AuthUser | null }) {
   if (printable) return null
 
   return (
-    <header className="no-print sticky top-0 z-20 border-b border-[var(--line)] bg-[var(--header-bg)] pt-[3px]">
-      <div className="page-wrap flex h-14 items-center justify-between">
+    <header className="no-print sticky top-0 z-20 border-b-2 border-[var(--sea-ink)] bg-[var(--header-bg)]">
+      <div className="page-wrap flex h-[4.25rem] items-center justify-between">
         <BrandMark />
-        <nav className="flex items-center gap-5 text-sm">
+        <nav className="flex items-center gap-4 sm:gap-7">
           {user ? (
             <>
               <Link to="/dashboard" className="nav-link">
@@ -26,7 +26,7 @@ export function SiteHeader({ user }: { user: AuthUser | null }) {
               <Link to="/upgrade" className="nav-link">
                 Upgrade
               </Link>
-              <span className="hidden max-w-[12rem] truncate text-[var(--sea-ink-soft)] sm:inline">
+              <span className="hidden max-w-[12rem] truncate font-mono text-[0.78rem] tracking-[0.04em] text-[var(--sea-ink-soft)] sm:inline">
                 {user.email}
               </span>
               <SignOutButton />
@@ -36,10 +36,7 @@ export function SiteHeader({ user }: { user: AuthUser | null }) {
               <a href="/#pricing" className="nav-link">
                 Pricing
               </a>
-              <Link
-                to="/login"
-                className="bg-[var(--sea-ink)] px-3 py-1.5 text-[var(--stamp-ink)] no-underline hover:text-[var(--stamp-ink)]"
-              >
+              <Link to="/login" className="nav-login">
                 Log in
               </Link>
             </>
@@ -80,13 +77,11 @@ export function SiteFooter() {
 
   return (
     <footer className="no-print site-footer">
-      <div className="page-wrap flex flex-wrap items-baseline justify-between gap-3 py-6 text-sm text-[var(--sea-ink-soft)]">
+      <div className="page-wrap flex flex-wrap items-baseline justify-between gap-3 py-7 font-mono text-[0.72rem] tracking-[0.03em] text-[var(--sea-ink-soft)]">
         <p>
-          <span className="text-[var(--sea-ink)]">{APP_NAME}</span>
-          <span className="mx-2 text-[var(--line)]">/</span>
-          {APP_TAGLINE}
+          {APP_NAME} — {APP_TAGLINE}
         </p>
-        <div className="flex gap-5">
+        <div className="flex gap-5 uppercase">
           <Link to="/privacy">Privacy</Link>
           <Link to="/terms">Terms</Link>
         </div>

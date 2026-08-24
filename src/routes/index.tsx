@@ -1,21 +1,22 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 
 import { InvoiceDocument } from '#/components/invoice-document'
-import { Button } from '#/components/ui/button'
+import { buttonVariants } from '#/components/ui/button'
 import { APP_NAME, FREE_INVOICE_LIMIT, PRO_PRICE_LABEL } from '#/lib/config'
+import { cn } from '#/lib/utils'
 
 export const Route = createFileRoute('/')({ component: Home })
 
 const sampleInvoice = {
   number: 'INV-2026-001',
-  status: 'sent' as const,
+  status: 'paid' as const,
   from_name: 'Jordan Lee',
   from_email: 'jordan@studio.example',
   from_address: 'Independent design',
   to_name: 'Northwind Co.',
-  to_email: 'ap@northwind.example',
+  to_email: '',
   to_address: '',
-  due_date: '2026-09-01',
+  due_date: '2026-08-31',
   notes: 'Thank you — payable within 14 days.',
   payment_link: '',
   currency: 'USD',
@@ -31,108 +32,119 @@ const sampleInvoice = {
 
 const steps = [
   {
-    title: 'Write it',
-    body: 'Name, client, line items, due date. That is the whole form.',
+    title: 'Write',
+    body: 'List the job and the rate. Due Link lays it out as a proper invoice — no template to fight with.',
   },
   {
-    title: 'Send the link',
-    body: 'Email it, or copy it. Drafts stay private until you mark them sent.',
+    title: 'Send',
+    body: 'One link goes out by email, or you copy it. Your client opens it and sees the amount. No account for them.',
   },
   {
-    title: 'Mark it paid',
-    body: 'You still get paid the way you already get paid. We keep the record.',
+    title: 'Know',
+    body: 'You mark it paid when the money lands. The record stays put. You stop hunting through email to remember.',
   },
 ] as const
 
+function HomeCta({ user }: { user: { id: string } | null }) {
+  const className = cn(buttonVariants({ size: 'lg' }), 'has-arrow no-underline')
+  if (user) {
+    return (
+      <Link to="/dashboard" className={className}>
+        Go to invoices
+      </Link>
+    )
+  }
+  return (
+    <Link to="/login" search={{ mode: 'signup' }} className={className}>
+      Create an invoice
+    </Link>
+  )
+}
+
 function Home() {
   const { user } = Route.useRouteContext()
+
   return (
-    <main className="page-wrap page-enter py-8 md:py-10">
-      <section className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.9fr)] lg:gap-6">
-        <div className="max-w-xl pt-2 lg:pt-6">
-          <p className="island-kicker">For one person, one job</p>
-          <h1 className="display-title mt-3 text-[2.7rem] leading-[1.02] md:text-6xl">
-            Send a <em>due link</em>.
+    <main className="page-wrap page-enter">
+      <section className="grid items-start gap-14 py-12 md:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div>
+          <p className="island-kicker">Ledger No. 001 — for one person, one job</p>
+          <h1 className="display-title mt-5 text-[clamp(2.1rem,4.6vw,3.6rem)]">
+            Send the bill.
             <br />
-            Know if it was paid.
+            Know when
+            <br />
+            it&apos;s <em>paid</em>.
           </h1>
-          <p className="mt-5 max-w-md text-[1.05rem] leading-relaxed text-[var(--sea-ink-soft)]">
-            {APP_NAME} writes the bill, emails the link, and keeps the status.{' '}
-            {FREE_INVOICE_LIMIT} free, then {PRO_PRICE_LABEL} for unlimited.
+          <p className="mt-6 max-w-[44ch] text-lg text-[var(--sea-ink-soft)]">
+            {APP_NAME} writes the invoice, sends the link, and keeps the status.{' '}
+            <b className="font-semibold text-[var(--sea-ink)]">
+              No login for your client. No spreadsheet for you.
+            </b>
           </p>
-          <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2">
-            {user ? (
-              <Link to="/dashboard" className="no-underline">
-                <Button size="lg" variant="stamp">
-                  Go to invoices
-                </Button>
-              </Link>
-            ) : (
-              <Link to="/login" search={{ mode: 'signup' }} className="no-underline">
-                <Button size="lg" variant="stamp">
-                  Create an invoice
-                </Button>
-              </Link>
-            )}
-            <a href="#pricing" className="text-sm text-[var(--sea-ink)]">
+          <div className="mt-8 flex flex-wrap items-center gap-6">
+            <HomeCta user={user} />
+            <a href="#pricing" className="link-secondary">
               See the price
             </a>
           </div>
+          <div className="ledger-meta">
+            <div>
+              <strong>{FREE_INVOICE_LIMIT}</strong>
+              free invoices
+            </div>
+            <div>
+              <strong>$29</strong>
+              once, unlimited after
+            </div>
+            <div>
+              <strong>0</strong>
+              logins for your client
+            </div>
+          </div>
         </div>
-        <div className="lg:-mr-6 lg:mt-10">
+
+        <div className="pr-3">
           <div className="desk-sheet">
             <InvoiceDocument invoice={sampleInvoice} />
           </div>
-          <p className="mt-4 text-right font-mono text-[0.68rem] tracking-wide text-[var(--sea-ink-soft)]">
-            sample · not a real bill
-          </p>
+          <p className="stage-caption">sample — you mark it paid</p>
         </div>
       </section>
 
-      <section className="mt-14 md:mt-16">
+      <hr className="border-0 border-t-2 border-[var(--sea-ink)]" />
+
+      <section className="py-16 md:py-20">
+        <div className="section-head">
+          <h2>How the link works</h2>
+          <span>three steps, one job</span>
+        </div>
         {steps.map((step, index) => (
           <article key={step.title} className="step-row">
             <span className="step-index">0{index + 1}</span>
-            <div className={index === 1 ? 'md:pl-10' : index === 2 ? 'md:pl-4' : ''}>
-              <h2 className="display-title text-[1.85rem] leading-none">{step.title}</h2>
-              <p className="mt-2 max-w-lg text-[var(--sea-ink-soft)]">{step.body}</p>
-            </div>
+            <h3 className="step-title">{step.title}</h3>
+            <p className="step-desc max-w-[56ch] text-[0.95rem] text-[var(--sea-ink-soft)]">
+              {step.body}
+            </p>
           </article>
         ))}
       </section>
 
-      <section id="pricing" className="price-ledger mt-16">
-        <div>
-          <p className="island-kicker">Price</p>
-          <p className="price-figure mt-3">
-            3<span className="ml-2 text-[1.15rem] tracking-normal text-[var(--sea-ink-soft)]">free</span>
-          </p>
-          <p className="display-title mt-3 text-3xl">
-            then <em>{PRO_PRICE_LABEL}</em>
-          </p>
-        </div>
-        <div className="pb-1">
-          <p className="max-w-md text-[var(--sea-ink-soft)]">
-            No monthly trap. We do not collect your client’s payment — paste your own
-            Stripe Payment Link if you want them to pay online.
-          </p>
-          <ul className="mt-5 space-y-2 text-sm">
-            <li>Email the invoice link, or copy it yourself</li>
-            <li>Public page with print-to-PDF</li>
-            <li>Draft / sent / paid — that’s the whole status list</li>
-            <li>Unlimited invoices after the one-time license</li>
-          </ul>
-          <div className="mt-7">
-            {user ? (
-              <Link to="/dashboard" className="no-underline">
-                <Button size="lg">Go to invoices</Button>
-              </Link>
-            ) : (
-              <Link to="/login" search={{ mode: 'signup' }} className="no-underline">
-                <Button size="lg">Start free</Button>
-              </Link>
-            )}
+      <section id="pricing" className="pb-20">
+        <div className="pricing-box">
+          <div>
+            <p className="amt">
+              <span className="free">{FREE_INVOICE_LIMIT} invoices free</span>
+              {' — then '}
+              <b>{PRO_PRICE_LABEL}</b>
+              {', for unlimited. No subscription line item.'}
+            </p>
+            <p className="mt-2 max-w-xl text-sm text-[var(--sea-ink-soft)]">
+              We do not collect your client’s payment. Paste your own Stripe Payment
+              Link if you want them to pay online.
+            </p>
           </div>
+          <HomeCta user={user} />
         </div>
       </section>
     </main>
